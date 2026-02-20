@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean Resort - Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f4c75 0%, #1b6ca8 50%, #0d3b6e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff08' d='M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,208C1248,192,1344,192,1392,192L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
+            background-size: cover;
+            pointer-events: none;
+        }
+
+        .login-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 50px 45px;
+            width: 420px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-section { text-align: center; margin-bottom: 35px; }
+
+        .logo-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 8px 20px rgba(15,76,117,0.3);
+        }
+        .logo-icon svg { width: 35px; height: 35px; fill: white; }
+
+        .logo-section h1 { color: #0f4c75; font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+        .logo-section p  { color: #888; font-size: 13px; margin-top: 5px; letter-spacing: 2px; text-transform: uppercase; }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #1b6ca8, transparent);
+            margin: 25px 0; opacity: 0.3;
+        }
+
+        .form-title { color: #333; font-size: 18px; font-weight: 600; margin-bottom: 25px; text-align: center; }
+
+        .form-group { margin-bottom: 20px; position: relative; }
+
+        .form-group label {
+            display: block; color: #555; font-size: 13px;
+            font-weight: 600; margin-bottom: 8px;
+            letter-spacing: 0.5px; text-transform: uppercase;
+        }
+
+        .input-wrapper { position: relative; }
+
+        .input-wrapper .input-icon {
+            position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%);
+        }
+        .input-wrapper .input-icon svg { width: 18px; height: 18px; fill: #aaa; }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 15px 13px 44px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 14px; color: #333;
+            transition: all 0.3s; background: #fafafa; outline: none;
+        }
+        .form-group input:focus {
+            border-color: #1b6ca8; background: #fff;
+            box-shadow: 0 0 0 4px rgba(27,108,168,0.1);
+        }
+        .input-wrapper:focus-within .input-icon svg { fill: #1b6ca8; }
+
+        .toggle-password {
+            position: absolute; right: 14px; top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer; background: none; border: none; padding: 0;
+        }
+        .toggle-password svg { width: 18px; height: 18px; fill: #aaa; }
+        .toggle-password:hover svg { fill: #1b6ca8; }
+
+        .error-message {
+            background: #fff0f0;
+            border: 1px solid #ffcccc;
+            border-left: 4px solid #e74c3c;
+            color: #c0392b;
+            padding: 12px 15px; border-radius: 8px;
+            font-size: 13px; margin-bottom: 20px;
+            display: none; align-items: center; gap: 8px;
+        }
+        .error-message.show { display: flex; }
+        .error-message svg { width: 16px; height: 16px; fill: #e74c3c; flex-shrink: 0; }
+
+        .login-btn {
+            width: 100%; padding: 14px;
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            color: white; border: none; border-radius: 10px;
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s; letter-spacing: 1px;
+            text-transform: uppercase; margin-top: 10px;
+        }
+        .login-btn:hover {
+            background: linear-gradient(135deg, #0d3b6e, #0f4c75);
+            box-shadow: 0 8px 25px rgba(15,76,117,0.4);
+            transform: translateY(-1px);
+        }
+        .login-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+        .spinner {
+            display: none; width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .back-link {
+            text-align: center; margin-top: 20px;
+        }
+        .back-link a {
+            color: #1b6ca8; font-size: 13px; text-decoration: none; font-weight: 600;
+        }
+        .back-link a:hover { text-decoration: underline; }
+
+        .footer-note {
+            text-align: center; margin-top: 16px;
+            color: #bbb; font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+
+    <div class="logo-section">
+        <div class="logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 3C9.24 3 7 5.24 7 8c0 2.08 1.22 3.87 3 4.68V17H7v2h3v2h2v-2h3v-2h-3v-4.32C13.78 11.87 15 10.08 15 8c0-2.76-2.24-5-3-5zm0 8c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zM3 21h18v-2H3v2z"/></svg>
+        </div>
+        <h1>OCEAN RESORT</h1>
+        <p>Reservation Management System</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="form-title">🧾 Staff Login</p>
+
+    <!-- Error message -->
+    <div class="error-message" id="errorMsg">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span id="errorText">Invalid username or password.</span>
+    </div>
+
+    <!-- Username -->
+    <div class="form-group">
+        <label for="username">Username</label>
+        <div class="input-wrapper">
+            <div class="input-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+            </div>
+            <input type="text" id="username" placeholder="Enter your username" autocomplete="username" />
+        </div>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+            <div class="input-icon">
+                <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg>
+            </div>
+            <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" />
+            <button class="toggle-password" type="button" onclick="togglePassword()">
+                <svg id="eyeIcon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+        <span id="btnText">Sign In</span>
+        <div class="spinner" id="spinner"></div>
+    </button>
+
+    <div class="back-link">
+        <a href="index.html">← Back to Welcome Page</a>
+    </div>
+
+    <div class="footer-note">
+        Authorized Personnel Only &nbsp;|&nbsp; Ocean View Resort © 2025
+    </div>
+
+</div>
+
+<script>
+    function togglePassword() {
+        const input = document.getElementById('password');
+        const icon  = document.getElementById('eyeIcon');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.innerHTML = '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>';
+        } else {
+            input.type = 'password';
+            icon.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
+        }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+    document.getElementById('username').addEventListener('input', clearError);
+    document.getElementById('password').addEventListener('input', clearError);
+
+    function clearError() {
+        document.getElementById('errorMsg').classList.remove('show');
+    }
+
+    function showError(msg) {
+        document.getElementById('errorText').textContent = msg;
+        document.getElementById('errorMsg').classList.add('show');
+    }
+
+    function handleLogin() {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const btn      = document.getElementById('loginBtn');
+        const spinner  = document.getElementById('spinner');
+        const btnText  = document.getElementById('btnText');
+
+        clearError();
+
+        if (!username) { showError('Please enter your username.'); return; }
+        if (!password) { showError('Please enter your password.'); return; }
+
+        // Loading state
+        btn.disabled           = true;
+        btnText.style.display  = 'none';
+        spinner.style.display  = 'block';
+
+        fetch('/Ocean_Resort/LoginServlet', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:    'username=' + encodeURIComponent(username) +
+                     '&password=' + encodeURIComponent(password)
+        })
+        .then(r => r.json())
+        .then(data => {
+            btn.disabled          = false;
+            btnText.style.display = 'block';
+            spinner.style.display = 'none';
+
+            if (data.success) {
+                // ✅ Redirect to whichever page the server says
+                // staff → dashboard.html
+                // admin → admin-dashboard.html
+                window.location.href = '/Ocean_Resort/' + data.redirect;
+            } else {
+                showError(data.message || 'Invalid username or password.');
+            }
+        })
+        .catch(() => {
+            btn.disabled          = false;
+            btnText.style.display = 'block';
+            spinner.style.display = 'none';
+            showError('Unable to connect to server. Please try again.');
+        });
+    }
+</script>
+</body>
+</html>

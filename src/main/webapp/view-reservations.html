@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean Resort - View Reservations</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; min-height: 100vh; }
+
+        .navbar {
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 65px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+        }
+        .navbar-brand { color: white; font-size: 18px; font-weight: 700; }
+        .back-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .main-content { padding: 35px 40px; }
+
+        .page-header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .page-header h1 { font-size: 24px; color: #1a1a2e; font-weight: 700; }
+        .page-header p { color: #888; font-size: 14px; margin-top: 4px; }
+
+        .add-btn {
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            color: white;
+            padding: 11px 22px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        .add-btn svg { width: 18px; height: 18px; fill: white; }
+        .add-btn:hover { box-shadow: 0 5px 20px rgba(15,76,117,0.3); transform: translateY(-1px); }
+
+        .filters-bar {
+            background: white;
+            border-radius: 14px;
+            padding: 20px 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            fill: #aaa;
+        }
+
+        .search-input input {
+            width: 100%;
+            padding: 11px 14px 11px 40px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input input:focus {
+            border-color: #1b6ca8;
+            box-shadow: 0 0 0 3px rgba(27,108,168,0.1);
+        }
+
+        .filter-select {
+            padding: 11px 14px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            min-width: 160px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-select:focus { border-color: #1b6ca8; }
+
+        /* TABLE */
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 18px 25px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 { font-size: 15px; color: #1a1a2e; font-weight: 700; }
+        .record-count { font-size: 13px; color: #888; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: #f8fbff;
+        }
+
+        thead th {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f5f5f5;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover { background: #f8fbff; }
+        tbody tr:last-child { border-bottom: none; }
+
+        tbody td {
+            padding: 14px 18px;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .res-id { font-weight: 700; color: #0f4c75; }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active { background: #d4edda; color: #1a7a4a; }
+        .badge-checked-out { background: #f0f0f0; color: #777; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+
+        .room-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #e8f4fd;
+            color: #0f4c75;
+        }
+
+        .action-btns { display: flex; gap: 8px; }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .action-btn svg { width: 16px; height: 16px; }
+
+        .btn-view { background: #e8f4fd; }
+        .btn-view svg { fill: #1b6ca8; }
+        .btn-view:hover { background: #1b6ca8; }
+        .btn-view:hover svg { fill: white; }
+
+        .btn-bill { background: #fff3cd; }
+        .btn-bill svg { fill: #856404; }
+        .btn-bill:hover { background: #f39c12; }
+        .btn-bill:hover svg { fill: white; }
+
+        .btn-delete { background: #fde8e8; }
+        .btn-delete svg { fill: #c0392b; }
+        .btn-delete:hover { background: #e74c3c; }
+        .btn-delete:hover svg { fill: white; }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #aaa;
+        }
+
+        .empty-state svg { width: 60px; height: 60px; fill: #ddd; margin-bottom: 15px; }
+        .empty-state h3 { font-size: 17px; color: #999; margin-bottom: 8px; }
+        .empty-state p { font-size: 13px; }
+
+        .loading { padding: 40px; text-align: center; color: #888; }
+
+        /* Pagination */
+        .pagination {
+            padding: 18px 25px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination span { font-size: 13px; color: #888; }
+
+        .pag-btns { display: flex; gap: 8px; }
+
+        .pag-btn {
+            padding: 7px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pag-btn:hover, .pag-btn.active { background: #0f4c75; color: white; border-color: #0f4c75; }
+        .pag-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-brand">🌊 OCEAN RESORT</div>
+    <a class="back-btn" href="staff-dashboard.html">← Back to Dashboard</a>
+</nav>
+
+<div class="main-content">
+    <div class="page-header">
+        <div>
+            <h1>All Reservations</h1>
+            <p>View and manage all guest reservations.</p>
+        </div>
+        <a class="add-btn" href="add-reservation.html">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            New Reservation
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+        <div class="search-input">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" id="searchInput" placeholder="Search by guest name, ID or contact..." oninput="filterTable()" />
+        </div>
+        <select class="filter-select" id="roomFilter" onchange="filterTable()">
+            <option value="">All Room Types</option>
+            <option value="Standard">Standard</option>
+            <option value="Deluxe">Deluxe</option>
+            <option value="Suite">Suite</option>
+            <option value="Presidential">Presidential</option>
+        </select>
+        <select class="filter-select" id="statusFilter" onchange="filterTable()">
+            <option value="">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="Checked Out">Checked Out</option>
+            <option value="Pending">Pending</option>
+        </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+        <div class="table-header">
+            <h3>Reservation Records</h3>
+            <span class="record-count" id="recordCount">Loading...</span>
+        </div>
+        <div id="tableContent">
+            <div class="loading">Loading reservations...</div>
+        </div>
+        <div class="pagination" id="paginationBar" style="display:none;">
+            <span id="pageInfo"></span>
+            <div class="pag-btns" id="pagBtns"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let allReservations = [];
+    let filtered = [];
+    let currentPage = 1;
+    const perPage = 10;
+
+    window.onload = loadReservations;
+
+    function loadReservations() {
+        fetch('/Ocean_Resort/ReservationServlet?action=getAll')
+            .then(r => r.json())
+            .then(data => {
+                allReservations = data.reservations || [];
+                filtered = [...allReservations];
+                renderTable();
+            })
+            .catch(() => {
+                // Demo data fallback
+                allReservations = [
+                    { reservationId:'RES-001', guestName:'Kasun Perera', contactNumber:'0711234567', roomType:'Deluxe', roomNumber:'201', checkIn:'2025-02-01', checkOut:'2025-02-05', status:'Active' },
+                    { reservationId:'RES-002', guestName:'Nimal Silva', contactNumber:'0722345678', roomType:'Standard', roomNumber:'102', checkIn:'2025-01-28', checkOut:'2025-02-02', status:'Checked Out' },
+                    { reservationId:'RES-003', guestName:'Sanduni Fernando', contactNumber:'0733456789', roomType:'Suite', roomNumber:'305', checkIn:'2025-02-10', checkOut:'2025-02-14', status:'Pending' }
+                ];
+                filtered = [...allReservations];
+                renderTable();
+            });
+    }
+
+    function filterTable() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const room = document.getElementById('roomFilter').value;
+        const status = document.getElementById('statusFilter').value;
+
+        filtered = allReservations.filter(r => {
+            const matchSearch = !search ||
+                r.guestName.toLowerCase().includes(search) ||
+                r.reservationId.toLowerCase().includes(search) ||
+                r.contactNumber.includes(search);
+            const matchRoom = !room || r.roomType === room;
+            const matchStatus = !status || r.status === status;
+            return matchSearch && matchRoom && matchStatus;
+        });
+
+        currentPage = 1;
+        renderTable();
+    }
+
+    function renderTable() {
+        const start = (currentPage - 1) * perPage;
+        const end = start + perPage;
+        const pageData = filtered.slice(start, end);
+
+        document.getElementById('recordCount').textContent = filtered.length + ' records found';
+
+        if (filtered.length === 0) {
+            document.getElementById('tableContent').innerHTML = `
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.47 0 12.36 0 10.52 0 8.9.92 7.84 2.35L7 3.32l-.84-.97C5.1.92 3.48 0 1.64 0 .74 0 0 .74 0 1.64v.04C0 2.78.36 4.05 1.11 5.12L2 6H0v2h2.13c.76 1 1.69 1.82 2.69 2.46L4 11H0v2h4v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7h4v-2h-4l-.82-2.54C20.31 7.82 21.24 7 22 6h-2z"/></svg>
+                    <h3>No reservations found</h3>
+                    <p>Try adjusting your search filters or add a new reservation.</p>
+                </div>`;
+            document.getElementById('paginationBar').style.display = 'none';
+            return;
+        }
+
+        let rows = pageData.map(r => `
+            <tr>
+                <td class="res-id">${r.reservationId}</td>
+                <td>${r.guestName}</td>
+                <td>${r.contactNumber}</td>
+                <td><span class="room-badge">${r.roomType}</span></td>
+                <td>${r.roomNumber}</td>
+                <td>${formatDate(r.checkIn)}</td>
+                <td>${formatDate(r.checkOut)}</td>
+                <td><span class="badge ${getBadgeClass(r.status)}">${r.status}</span></td>
+                <td>
+                    <div class="action-btns">
+                        <button class="action-btn btn-view" title="View Details" onclick="viewReservation('${r.reservationId}')">
+                            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        </button>
+                        <button class="action-btn btn-bill" title="Generate Bill" onclick="generateBill('${r.reservationId}')">
+                            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                        </button>
+                        <button class="action-btn btn-delete" title="Delete" onclick="deleteReservation('${r.reservationId}')">
+                            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>`).join('');
+
+        document.getElementById('tableContent').innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Res. ID</th><th>Guest Name</th><th>Contact</th>
+                        <th>Room Type</th><th>Room No.</th>
+                        <th>Check-in</th><th>Check-out</th>
+                        <th>Status</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>`;
+
+        // Pagination
+        const totalPages = Math.ceil(filtered.length / perPage);
+        document.getElementById('paginationBar').style.display = 'flex';
+        document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages} (${filtered.length} records)`;
+
+        let btns = '';
+        for (let i = 1; i <= totalPages; i++) {
+            btns += `<button class="pag-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        }
+        document.getElementById('pagBtns').innerHTML = btns;
+    }
+
+    function goToPage(p) { currentPage = p; renderTable(); }
+
+    function formatDate(d) {
+        if (!d) return '-';
+        const dt = new Date(d);
+        return dt.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+    }
+
+    function getBadgeClass(s) {
+        if (s === 'Active') return 'badge-active';
+        if (s === 'Checked Out') return 'badge-checked-out';
+        return 'badge-pending';
+    }
+
+    function viewReservation(id) {
+        window.location.href = 'search-reservation.html?id=' + id;
+    }
+
+    function generateBill(id) {
+        window.location.href = 'billing.html?id=' + id;
+    }
+
+    function deleteReservation(id) {
+        if (!confirm('Are you sure you want to delete reservation ' + id + '?')) return;
+        fetch('/Ocean_Resort/ReservationServlet?action=delete&id=' + id, { method: 'DELETE' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    allReservations = allReservations.filter(r => r.reservationId !== id);
+                    filtered = filtered.filter(r => r.reservationId !== id);
+                    renderTable();
+                } else {
+                    alert('Could not delete reservation.');
+                }
+            })
+            .catch(() => {
+                allReservations = allReservations.filter(r => r.reservationId !== id);
+                filtered = filtered.filter(r => r.reservationId !== id);
+                renderTable();
+            });
+    }
+</script>
+</body>
+</html>

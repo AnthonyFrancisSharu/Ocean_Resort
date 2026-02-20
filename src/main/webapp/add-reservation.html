@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean Resort - Add Reservation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; min-height: 100vh; }
+
+        .navbar {
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 65px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+        }
+        .navbar-brand { display: flex; align-items: center; gap: 12px; color: white; text-decoration: none; }
+        .navbar-brand h2 { font-size: 18px; font-weight: 700; }
+        .back-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-btn svg { width: 16px; height: 16px; fill: white; }
+        .back-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .main-content { padding: 35px 40px; }
+
+        .page-header { margin-bottom: 28px; }
+        .page-header h1 { font-size: 24px; color: #1a1a2e; font-weight: 700; }
+        .page-header p { color: #888; font-size: 14px; margin-top: 4px; }
+
+        /* Error banner */
+        .error-banner {
+            display: none;
+            background: #fff0f0;
+            border: 1px solid #ffcccc;
+            border-left: 4px solid #e74c3c;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            color: #c0392b;
+            font-size: 14px;
+            font-weight: 600;
+            align-items: center;
+            gap: 10px;
+        }
+        .error-banner.show { display: flex; }
+        .error-banner svg { width: 20px; height: 20px; fill: #e74c3c; flex-shrink: 0; }
+
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+
+        .form-section {
+            padding: 28px 35px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .form-section:last-child { border-bottom: none; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+        .section-header .sec-icon {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .section-header .sec-icon svg { width: 20px; height: 20px; fill: white; }
+        .section-header h3 { font-size: 16px; color: #1a1a2e; font-weight: 700; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-grid.three-col { grid-template-columns: 1fr 1fr 1fr; }
+        .form-grid.full { grid-template-columns: 1fr; }
+
+        .form-group { display: flex; flex-direction: column; gap: 7px; }
+        .form-group.span-2 { grid-column: span 2; }
+
+        .form-group label {
+            font-size: 13px; font-weight: 600; color: #555;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .form-group label .required { color: #e74c3c; margin-left: 3px; }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px 14px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 14px; color: #333;
+            background: #fafafa;
+            transition: all 0.3s; outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #1b6ca8;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(27,108,168,0.1);
+        }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-group .field-error { font-size: 12px; color: #e74c3c; display: none; }
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea { border-color: #e74c3c; }
+        .form-group.error .field-error { display: block; }
+
+        /* Room number availability status */
+        .room-status {
+            font-size: 12px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 5px;
+            margin-top: 2px;
+        }
+        .room-status.available { color: #27ae60; display: flex; }
+        .room-status.unavailable { color: #e74c3c; display: flex; }
+        .room-status svg { width: 14px; height: 14px; }
+
+        .room-rates {
+            background: #f8fbff;
+            border: 1px solid #d6e8f7;
+            border-radius: 10px;
+            padding: 15px 18px;
+            margin-top: 15px;
+        }
+        .room-rates h4 { font-size: 13px; color: #1b6ca8; margin-bottom: 10px; font-weight: 600; }
+        .rates-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .rate-item { text-align: center; padding: 10px; background: white; border-radius: 8px; border: 1px solid #e8e8e8; }
+        .rate-item .room-type { font-size: 11px; color: #888; text-transform: uppercase; }
+        .rate-item .rate { font-size: 15px; font-weight: 700; color: #0f4c75; }
+
+        .cost-preview {
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            color: white; border-radius: 12px;
+            padding: 20px 25px; margin-top: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .cost-preview .cost-label { font-size: 14px; opacity: 0.85; }
+        .cost-preview .cost-value { font-size: 26px; font-weight: 700; }
+        .cost-preview .cost-detail { font-size: 12px; opacity: 0.7; margin-top: 3px; }
+
+        .form-actions {
+            padding: 25px 35px;
+            display: flex; gap: 15px; justify-content: flex-end;
+            background: #fafafa;
+        }
+
+        .btn {
+            padding: 13px 28px; border-radius: 10px;
+            font-size: 14px; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.3s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn svg { width: 18px; height: 18px; }
+        .btn-secondary { background: #f0f4f8; color: #555; border: 2px solid #e0e0e0; }
+        .btn-secondary:hover { background: #e0e8f0; }
+        .btn-primary { background: linear-gradient(135deg, #0f4c75, #1b6ca8); color: white; }
+        .btn-primary svg { fill: white; }
+        .btn-primary:hover { background: linear-gradient(135deg, #0d3b6e, #0f4c75); box-shadow: 0 5px 20px rgba(15,76,117,0.3); transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Success Modal */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none; align-items: center; justify-content: center; z-index: 999;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: white; border-radius: 20px;
+            padding: 40px; text-align: center;
+            max-width: 420px; width: 90%;
+            animation: popIn 0.3s ease;
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal .success-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, #1a7a4a, #27ae60);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 18px;
+        }
+        .modal .success-icon svg { width: 38px; height: 38px; fill: white; }
+        .modal h3 { font-size: 20px; color: #1a1a2e; margin-bottom: 10px; }
+        .modal p { font-size: 14px; color: #888; margin-bottom: 8px; }
+        .modal .reservation-id { font-size: 22px; font-weight: 700; color: #1b6ca8; margin: 10px 0; }
+        .modal .email-note { font-size: 12px; color: #27ae60; margin-top: 5px; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 25px; justify-content: center; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-brand"><h2>🌊 OCEAN RESORT</h2></div>
+    <a class="back-btn" href="staff-dashboard.html">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Back to Dashboard
+    </a>
+</nav>
+
+<div class="main-content">
+    <div class="page-header">
+        <h1>Add New Reservation</h1>
+        <p>Fill in the guest details and booking information below.</p>
+    </div>
+
+    <!-- Error Banner — shown when room is already booked -->
+    <div class="error-banner" id="errorBanner">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span id="errorText">An error occurred.</span>
+    </div>
+
+    <div class="form-card">
+
+        <!-- Guest Info Section -->
+        <div class="form-section">
+            <div class="section-header">
+                <div class="sec-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+                <h3>Guest Information</h3>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Reservation Number</label>
+                    <input type="text" id="reservationId" readonly style="background:#f0f4f8; color:#555;" />
+                </div>
+                <div class="form-group">
+                    <label>Guest Full Name <span class="required">*</span></label>
+                    <input type="text" id="guestName" placeholder="Enter full name" />
+                    <span class="field-error">Please enter the guest name.</span>
+                </div>
+                <div class="form-group span-2">
+                    <label>Address <span class="required">*</span></label>
+                    <textarea id="address" placeholder="Enter full address"></textarea>
+                    <span class="field-error">Please enter the address.</span>
+                </div>
+                <div class="form-group">
+                    <label>Contact Number <span class="required">*</span></label>
+                    <input type="tel" id="contactNumber" placeholder="e.g. 0712345678" maxlength="10" />
+                    <span class="field-error">Enter a valid 10-digit contact number.</span>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="guest@email.com" />
+                    <span class="field-error">Enter a valid email address.</span>
+                </div>
+                <div class="form-group">
+                    <label>NIC / Passport No. <span class="required">*</span></label>
+                    <input type="text" id="nicNumber" placeholder="e.g. 991234567V" />
+                    <span class="field-error">Please enter NIC or Passport number.</span>
+                </div>
+                <div class="form-group">
+                    <label>Number of Guests <span class="required">*</span></label>
+                    <select id="numGuests">
+                        <option value="">Select</option>
+                        <option value="1">1 Guest</option>
+                        <option value="2">2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4 Guests</option>
+                    </select>
+                    <span class="field-error">Please select number of guests.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Details Section -->
+        <div class="form-section">
+            <div class="section-header">
+                <div class="sec-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
+                <h3>Booking Details</h3>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Room Type <span class="required">*</span></label>
+                    <select id="roomType" onchange="calculateCost()">
+                        <option value="">Select Room Type</option>
+                        <option value="Standard">Standard Room</option>
+                        <option value="Deluxe">Deluxe Room</option>
+                        <option value="Suite">Suite</option>
+                        <option value="Presidential">Presidential Suite</option>
+                    </select>
+                    <span class="field-error">Please select a room type.</span>
+                </div>
+                <div class="form-group">
+                    <label>Room Number <span class="required">*</span></label>
+                    <input type="text" id="roomNumber" placeholder="e.g. 101"
+                           oninput="clearRoomStatus()" />
+                    <span class="field-error">Please enter the room number.</span>
+                    <!-- Live availability indicator -->
+                    <div class="room-status" id="roomStatus">
+                        <svg id="roomStatusIcon" viewBox="0 0 24 24"></svg>
+                        <span id="roomStatusText"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Check-in Date <span class="required">*</span></label>
+                    <input type="date" id="checkIn" onchange="calculateCost(); clearRoomStatus();" />
+                    <span class="field-error">Please select check-in date.</span>
+                </div>
+                <div class="form-group">
+                    <label>Check-out Date <span class="required">*</span></label>
+                    <input type="date" id="checkOut" onchange="calculateCost(); clearRoomStatus();" />
+                    <span class="field-error">Check-out must be after check-in date.</span>
+                </div>
+                <div class="form-group span-2">
+                    <label>Special Requests</label>
+                    <textarea id="specialRequests" placeholder="Any special requests or notes..."></textarea>
+                </div>
+            </div>
+
+            <!-- Room Rates Reference -->
+            <div class="room-rates">
+                <h4>📋 Room Rates Per Night (LKR)</h4>
+                <div class="rates-grid">
+                    <div class="rate-item"><div class="room-type">Standard</div><div class="rate">8,500</div></div>
+                    <div class="rate-item"><div class="room-type">Deluxe</div><div class="rate">12,000</div></div>
+                    <div class="rate-item"><div class="room-type">Suite</div><div class="rate">18,500</div></div>
+                    <div class="rate-item"><div class="room-type">Presidential</div><div class="rate">35,000</div></div>
+                </div>
+            </div>
+
+            <!-- Cost Preview -->
+            <div class="cost-preview" id="costPreview" style="display:none;">
+                <div>
+                    <div class="cost-label">Estimated Total Cost</div>
+                    <div class="cost-detail" id="costDetail">-- nights × LKR --</div>
+                </div>
+                <div class="cost-value" id="costValue">LKR 0</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+            <button class="btn btn-secondary" onclick="clearForm()">
+                <svg viewBox="0 0 24 24" style="fill:#555;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                Clear Form
+            </button>
+            <button class="btn btn-primary" id="saveBtn" onclick="submitReservation()">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Save Reservation
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal">
+        <div class="success-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <h3>Reservation Saved!</h3>
+        <p>The reservation has been successfully created.</p>
+        <div class="reservation-id" id="savedResId">RES-001</div>
+        <p style="font-size:13px;">Keep this reservation number for future reference.</p>
+        <div class="email-note" id="emailNote"></div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="addAnother()">Add Another</button>
+            <button class="btn btn-primary" onclick="goToDashboard()">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                Dashboard
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ROOM_RATES = { Standard: 8500, Deluxe: 12000, Suite: 18500, Presidential: 35000 };
+
+    window.onload = function () {
+        generateReservationId();
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('checkIn').min = today;
+        document.getElementById('checkOut').min = today;
+    };
+
+    function generateReservationId() {
+        fetch('/Ocean_Resort/ReservationServlet?action=generateId')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('reservationId').value = data.reservationId || generateLocalId();
+            })
+            .catch(() => {
+                document.getElementById('reservationId').value = generateLocalId();
+            });
+    }
+
+    function generateLocalId() {
+        return 'RES-' + String(Math.floor(Math.random() * 900) + 100);
+    }
+
+    function calculateCost() {
+        const roomType = document.getElementById('roomType').value;
+        const checkIn  = document.getElementById('checkIn').value;
+        const checkOut = document.getElementById('checkOut').value;
+
+        if (roomType && checkIn && checkOut) {
+            const nights = Math.ceil((new Date(checkOut) - new Date(checkIn)) / 86400000);
+            if (nights > 0) {
+                const rate  = ROOM_RATES[roomType] || 0;
+                const total = nights * rate;
+                document.getElementById('costPreview').style.display = 'flex';
+                document.getElementById('costDetail').textContent =
+                    nights + ' night(s) × LKR ' + rate.toLocaleString();
+                document.getElementById('costValue').textContent =
+                    'LKR ' + total.toLocaleString();
+                document.getElementById('checkOut').min = checkIn;
+            }
+        }
+    }
+
+    // ── Clear room availability indicator when user changes room/dates ──
+    function clearRoomStatus() {
+        const el = document.getElementById('roomStatus');
+        el.className = 'room-status';
+    }
+
+    // ── Show availability indicator next to room number field ──
+    function showRoomStatus(available) {
+        const el       = document.getElementById('roomStatus');
+        const iconEl   = document.getElementById('roomStatusIcon');
+        const textEl   = document.getElementById('roomStatusText');
+
+        if (available) {
+            el.className = 'room-status available';
+            iconEl.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+            textEl.textContent = 'Room is available for selected dates';
+        } else {
+            el.className = 'room-status unavailable';
+            iconEl.innerHTML = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>';
+            textEl.textContent = 'Room is already booked for these dates!';
+        }
+    }
+
+    function showError(msg) {
+        const banner = document.getElementById('errorBanner');
+        document.getElementById('errorText').textContent = msg;
+        banner.classList.add('show');
+        // Scroll to top so user sees the error
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideError() {
+        document.getElementById('errorBanner').classList.remove('show');
+    }
+
+    function validateForm() {
+        let valid = true;
+        hideError();
+
+        const fields = [
+            { id: 'guestName',     msg: 'Please enter the guest name.' },
+            { id: 'address',       msg: 'Please enter the address.' },
+            { id: 'nicNumber',     msg: 'Please enter NIC or Passport number.' },
+            { id: 'numGuests',     msg: 'Please select number of guests.' },
+            { id: 'roomType',      msg: 'Please select a room type.' },
+            { id: 'roomNumber',    msg: 'Please enter the room number.' },
+            { id: 'checkIn',       msg: 'Please select check-in date.' },
+            { id: 'checkOut',      msg: 'Please select check-out date.' }
+        ];
+
+        fields.forEach(f => {
+            const el    = document.getElementById(f.id);
+            const group = el.closest('.form-group');
+            const errEl = group.querySelector('.field-error');
+            if (!el.value.trim()) {
+                group.classList.add('error');
+                if (errEl) errEl.textContent = f.msg;
+                valid = false;
+            } else {
+                group.classList.remove('error');
+            }
+        });
+
+        // Contact number must be 10 digits
+        const contact      = document.getElementById('contactNumber').value.trim();
+        const contactGroup = document.getElementById('contactNumber').closest('.form-group');
+        if (!/^[0-9]{10}$/.test(contact)) {
+            contactGroup.classList.add('error');
+            valid = false;
+        } else {
+            contactGroup.classList.remove('error');
+        }
+
+        // Check-out must be after check-in
+        const checkIn  = document.getElementById('checkIn').value;
+        const checkOut = document.getElementById('checkOut').value;
+        if (checkIn && checkOut && new Date(checkOut) <= new Date(checkIn)) {
+            document.getElementById('checkOut').closest('.form-group').classList.add('error');
+            document.getElementById('checkOut').closest('.form-group')
+                .querySelector('.field-error').textContent = 'Check-out must be after check-in date.';
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    function submitReservation() {
+        if (!validateForm()) return;
+
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<svg viewBox="0 0 24 24" style="fill:white;animation:spin 1s linear infinite;"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg> Saving...';
+
+        // Build the JSON — keys must EXACTLY match what parseJson() looks for in the servlet
+        const data = {
+            reservationId:   document.getElementById('reservationId').value.trim(),
+            guestName:       document.getElementById('guestName').value.trim(),
+            address:         document.getElementById('address').value.trim(),
+            contactNumber:   document.getElementById('contactNumber').value.trim(),
+            email:           document.getElementById('email').value.trim(),
+            nicNumber:       document.getElementById('nicNumber').value.trim(),
+            numGuests:       document.getElementById('numGuests').value,
+            roomType:        document.getElementById('roomType').value,
+            roomNumber:      document.getElementById('roomNumber').value.trim(),
+            checkIn:         document.getElementById('checkIn').value,
+            checkOut:        document.getElementById('checkOut').value,
+            checkInTime:     "14:00",
+            checkOutTime:    "12:00",
+            specialRequests: document.getElementById('specialRequests').value.trim()
+        };
+
+        fetch('/Ocean_Resort/ReservationServlet?action=add', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(res => {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<svg viewBox="0 0 24 24" style="fill:white;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Save Reservation';
+
+            if (res.success) {
+                // ✅ SUCCESS — show modal
+                document.getElementById('savedResId').textContent =
+                    res.reservationId || data.reservationId;
+
+                // Show email sent note if applicable
+                const emailNote = document.getElementById('emailNote');
+                if (res.emailSent) {
+                    emailNote.textContent = '📧 Confirmation email sent to guest.';
+                } else {
+                    emailNote.textContent = '';
+                }
+
+                document.getElementById('successModal').classList.add('show');
+
+                // Show available status on room field
+                showRoomStatus(true);
+
+            } else {
+                // ❌ FAILED — show error banner (room taken, validation failed, etc.)
+                showError(res.message || 'Could not save reservation. Please try again.');
+
+                // If room is unavailable, highlight the room number field too
+                if (res.message && res.message.includes('already booked')) {
+                    showRoomStatus(false);
+                    document.getElementById('roomNumber').closest('.form-group').classList.add('error');
+                }
+            }
+        })
+        .catch(err => {
+            // ❌ Network/server error — show error, DO NOT show success modal
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<svg viewBox="0 0 24 24" style="fill:white;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Save Reservation';
+            showError('Unable to connect to the server. Please check your connection and try again.');
+            console.error('Fetch error:', err);
+        });
+    }
+
+    function clearForm() {
+        ['guestName','address','contactNumber','email','nicNumber',
+         'roomNumber','specialRequests'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('numGuests').value     = '';
+        document.getElementById('roomType').value      = '';
+        document.getElementById('checkIn').value       = '';
+        document.getElementById('checkOut').value      = '';
+        document.getElementById('costPreview').style.display = 'none';
+        document.querySelectorAll('.form-group.error').forEach(g => g.classList.remove('error'));
+        clearRoomStatus();
+        hideError();
+    }
+
+    function addAnother() {
+        document.getElementById('successModal').classList.remove('show');
+        clearForm();
+        generateReservationId();
+    }
+
+    function goToDashboard() {
+        window.location.href = 'dashboard.html';
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean View Resort</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ocean-deep:   #0a2540;
+            --ocean-mid:    #0f4c75;
+            --ocean-light:  #1b6ca8;
+            --gold:         #c9a84c;
+            --gold-light:   #e8c87a;
+            --cream:        #faf8f4;
+            --white:        #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--ocean-deep);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated ocean background ── */
+        .bg-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: linear-gradient(160deg,
+                #0a1628 0%,
+                #0a2540 30%,
+                #0d3559 60%,
+                #0a2540 100%);
+        }
+
+        /* Floating wave shapes */
+        .wave {
+            position: fixed;
+            width: 200%;
+            height: 300px;
+            opacity: 0.06;
+            border-radius: 50%;
+        }
+        .wave-1 {
+            bottom: -100px; left: -50%;
+            background: radial-gradient(ellipse, #4db8ff 0%, transparent 70%);
+            animation: drift 12s ease-in-out infinite;
+        }
+        .wave-2 {
+            bottom: 50px; left: -30%;
+            background: radial-gradient(ellipse, #1b6ca8 0%, transparent 70%);
+            animation: drift 16s ease-in-out infinite reverse;
+            opacity: 0.08;
+        }
+        .wave-3 {
+            bottom: 150px; left: -20%;
+            background: radial-gradient(ellipse, #c9a84c 0%, transparent 70%);
+            animation: drift 20s ease-in-out infinite;
+            opacity: 0.04;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translateX(0) scaleY(1); }
+            50%       { transform: translateX(8%) scaleY(1.1); }
+        }
+
+        /* Particle dots */
+        .particles {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(201,168,76,0.3);
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 0.6; }
+            100% { transform: translateY(-20px) scale(1); opacity: 0; }
+        }
+
+        /* ── Main layout ── */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Top nav ── */
+        .topnav {
+            padding: 24px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            width: 44px; height: 44px;
+            border: 1.5px solid rgba(201,168,76,0.5);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+
+        .brand-text {
+            display: flex; flex-direction: column;
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .brand-sub {
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .nav-tag {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 5px 14px;
+            border-radius: 20px;
+        }
+
+        /* ── Hero section ── */
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 30px;
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 24px;
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(48px, 8vw, 90px);
+            font-weight: 900;
+            color: var(--white);
+            line-height: 1.0;
+            margin-bottom: 12px;
+            animation: fadeUp 0.8s 0.15s ease both;
+        }
+
+        .hero-title .accent {
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--gold);
+        }
+
+        .hero-location {
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            animation: fadeUp 0.8s 0.25s ease both;
+        }
+
+        .hero-divider {
+            width: 60px; height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin: 0 auto 40px;
+            animation: fadeUp 0.8s 0.3s ease both;
+        }
+
+        .hero-desc {
+            max-width: 520px;
+            font-size: 16px;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.8;
+            margin-bottom: 60px;
+            animation: fadeUp 0.8s 0.35s ease both;
+        }
+
+        /* ── Login cards ── */
+        .login-cards {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeUp 0.8s 0.45s ease both;
+        }
+
+        .login-card {
+            position: relative;
+            width: 240px;
+            padding: 32px 28px;
+            border-radius: 20px;
+            text-decoration: none;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 20px;
+        }
+
+        .login-card:hover { transform: translateY(-6px); }
+        .login-card:hover::before { opacity: 1; }
+
+        /* Admin card */
+        .card-admin {
+            background: linear-gradient(135deg,
+                rgba(201,168,76,0.15) 0%,
+                rgba(201,168,76,0.05) 100%);
+            border-color: rgba(201,168,76,0.3);
+        }
+        .card-admin::before {
+            background: linear-gradient(135deg,
+                rgba(201,168,76,0.2),
+                rgba(201,168,76,0.08));
+        }
+        .card-admin:hover {
+            box-shadow: 0 20px 60px rgba(201,168,76,0.2),
+                        0 0 0 1px rgba(201,168,76,0.4);
+        }
+
+        /* Staff card */
+        .card-staff {
+            background: linear-gradient(135deg,
+                rgba(27,108,168,0.2) 0%,
+                rgba(27,108,168,0.05) 100%);
+            border-color: rgba(27,108,168,0.3);
+        }
+        .card-staff::before {
+            background: linear-gradient(135deg,
+                rgba(27,108,168,0.25),
+                rgba(27,108,168,0.1));
+        }
+        .card-staff:hover {
+            box-shadow: 0 20px 60px rgba(27,108,168,0.25),
+                        0 0 0 1px rgba(27,108,168,0.5);
+        }
+
+        .card-icon {
+            width: 54px; height: 54px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .card-admin .card-icon {
+            background: rgba(201,168,76,0.15);
+            border: 1px solid rgba(201,168,76,0.3);
+        }
+        .card-staff .card-icon {
+            background: rgba(27,108,168,0.15);
+            border: 1px solid rgba(27,108,168,0.4);
+        }
+
+        .card-role {
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .card-admin .card-role { color: var(--gold); }
+        .card-staff .card-role { color: #5ab3f0; }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .card-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .card-admin .card-btn {
+            background: rgba(201,168,76,0.15);
+            color: var(--gold-light);
+            border: 1px solid rgba(201,168,76,0.25);
+        }
+        .card-staff .card-btn {
+            background: rgba(27,108,168,0.2);
+            color: #7dc8f5;
+            border: 1px solid rgba(27,108,168,0.3);
+        }
+
+        .card-btn-arrow {
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        .login-card:hover .card-btn-arrow { transform: translateX(4px); }
+
+        /* ── Stats strip ── */
+        .stats-strip {
+            padding: 30px 50px;
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            animation: fadeUp 0.8s 0.55s ease both;
+        }
+
+        .stat { text-align: center; }
+        .stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .stat-label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-top: 4px;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .topnav { padding: 20px 24px; }
+            .stats-strip { gap: 30px; flex-wrap: wrap; padding: 24px; }
+            .login-cards { gap: 16px; }
+            .login-card { width: 100%; max-width: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-layer"></div>
+<div class="wave wave-1"></div>
+<div class="wave wave-2"></div>
+<div class="wave wave-3"></div>
+<div class="particles" id="particles"></div>
+
+<div class="wrapper">
+
+    <!-- Top nav -->
+    <nav class="topnav">
+        <div class="brand">
+            <div class="brand-icon">🌊</div>
+            <div class="brand-text">
+                <span class="brand-name">Ocean View Resort</span>
+                <span class="brand-sub">Galle · Sri Lanka</span>
+            </div>
+        </div>
+        <span class="nav-tag">Staff Portal</span>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <p class="hero-eyebrow">Welcome to the</p>
+        <h1 class="hero-title">
+            Ocean<br><span class="accent">Resort</span>
+        </h1>
+        <p class="hero-location">📍 Beach Road, Galle, Sri Lanka</p>
+        <div class="hero-divider"></div>
+        <p class="hero-desc">
+            Reservation Management System — manage guest bookings,
+            room assignments, and billing all in one place.
+            Please select your access level to continue.
+        </p>
+
+        <!-- Login cards -->
+        <div class="login-cards">
+
+            <!-- Admin login -->
+            <a class="login-card card-admin" href="admin-login.html">
+                <div class="card-icon">👑</div>
+                <p class="card-role">System Access</p>
+                <h3 class="card-title">Admin Login</h3>
+                <p class="card-desc">
+                    Full system access including staff management,
+                    reports, and all reservation controls.
+                </p>
+                <div class="card-btn">
+                    <span>Enter as Admin</span>
+                    <span class="card-btn-arrow">→</span>
+                </div>
+            </a>
+
+            <!-- Staff login -->
+            <a class="login-card card-staff" href="login.html">
+                <div class="card-icon">🧾</div>
+                <p class="card-role">Staff Access</p>
+                <h3 class="card-title">Staff Login</h3>
+                <p class="card-desc">
+                    Front desk access for managing reservations,
+                    guest check-in, check-out and billing.
+                </p>
+                <div class="card-btn">
+                    <span>Enter as Staff</span>
+                    <span class="card-btn-arrow">→</span>
+                </div>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-strip">
+        <div class="stat">
+            <div class="stat-num">4★</div>
+            <div class="stat-label">Star Resort</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">80+</div>
+            <div class="stat-label">Rooms</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">24/7</div>
+            <div class="stat-label">Support</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">2005</div>
+            <div class="stat-label">Est. Year</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Generate floating particles
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 4 + 2;
+        p.style.cssText = `
+            width: ${size}px;
+            height: ${size}px;
+            left: ${Math.random() * 100}%;
+            animation-duration: ${Math.random() * 15 + 10}s;
+            animation-delay: ${Math.random() * 10}s;
+        `;
+        container.appendChild(p);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+         https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <display-name>Ocean Resort Reservation System</display-name>
+
+    <!-- Default welcome page -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <!-- Session timeout: 30 minutes -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+    <!--
+        Servlets are registered via @WebServlet annotations in each class.
+        No additional servlet mappings required here.
+
+        Servlet Summary:
+        - /LoginServlet       → LoginServlet.java
+        - /LogoutServlet      → LogoutServlet.java
+        - /DashboardServlet   → DashboardServlet.java
+        - /ReservationServlet → ReservationServlet.java
+    -->
+
+</web-app>

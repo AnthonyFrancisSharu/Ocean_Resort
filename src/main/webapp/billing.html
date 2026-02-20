@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ocean Resort - Billing</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; min-height: 100vh; }
+
+    .navbar {
+        background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+        padding: 0 30px; display: flex; align-items: center;
+        justify-content: space-between; height: 65px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+    }
+    .navbar-brand { color: white; font-size: 18px; font-weight: 700; }
+    .back-btn { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 18px; border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none; }
+
+    .main-content { padding: 35px 40px; }
+    .page-header { margin-bottom: 25px; }
+    .page-header h1 { font-size: 24px; color: #1a1a2e; font-weight: 700; }
+    .page-header p { color: #888; font-size: 14px; margin-top: 4px; }
+
+    /* Search Bar */
+    .search-bar {
+        background: white;
+        border-radius: 14px;
+        padding: 20px 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+        display: flex;
+        gap: 12px;
+    }
+
+    .search-bar input {
+        flex: 1;
+        padding: 11px 15px;
+        border: 2px solid #e8e8e8;
+        border-radius: 10px;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s;
+    }
+
+    .search-bar input:focus { border-color: #1b6ca8; }
+
+    .search-bar button {
+        padding: 11px 22px;
+        background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* Bill Container */
+    .bill-wrapper { display: none; }
+    .bill-wrapper.show { display: block; }
+
+    .bill-actions {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        padding: 11px 22px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+
+    .btn svg { width: 17px; height: 17px; }
+    .btn-primary { background: linear-gradient(135deg, #0f4c75, #1b6ca8); color: white; }
+    .btn-primary svg { fill: white; }
+    .btn-primary:hover { box-shadow: 0 5px 20px rgba(15,76,117,0.3); }
+    .btn-secondary { background: #f0f4f8; color: #555; border: 2px solid #e0e0e0; }
+    .btn-secondary svg { fill: #555; }
+    .btn-green { background: linear-gradient(135deg, #1a7a4a, #27ae60); color: white; }
+    .btn-green svg { fill: white; }
+
+    /* BILL RECEIPT */
+    .bill-receipt {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+        overflow: hidden;
+        max-width: 750px;
+        margin: 0 auto;
+    }
+
+    .bill-top {
+        background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+        padding: 30px 40px;
+        color: white;
+        text-align: center;
+    }
+
+    .bill-top .hotel-name { font-size: 26px; font-weight: 800; letter-spacing: 2px; }
+    .bill-top .hotel-sub { font-size: 12px; opacity: 0.7; letter-spacing: 3px; margin-top: 4px; }
+    .bill-top .hotel-addr { font-size: 13px; opacity: 0.85; margin-top: 8px; }
+    .bill-top .bill-title { font-size: 18px; font-weight: 700; margin-top: 18px; background: rgba(255,255,255,0.15); padding: 8px 24px; border-radius: 25px; display: inline-block; letter-spacing: 2px; }
+
+    .bill-meta {
+        display: flex;
+        justify-content: space-between;
+        padding: 18px 40px;
+        background: #f8fbff;
+        border-bottom: 2px dashed #e0e0e0;
+    }
+
+    .meta-group { }
+    .meta-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+    .meta-value { font-size: 14px; color: #1a1a2e; font-weight: 700; margin-top: 3px; }
+
+    .bill-section { padding: 22px 40px; border-bottom: 1px solid #f0f0f0; }
+    .bill-section h4 { font-size: 13px; color: #0f4c75; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+
+    .guest-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .g-item .g-label { font-size: 12px; color: #999; }
+    .g-item .g-value { font-size: 14px; color: #333; font-weight: 600; }
+
+    /* Charges Table */
+    .charges-table { width: 100%; border-collapse: collapse; }
+    .charges-table th { text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 700; color: #555; text-transform: uppercase; background: #f8fbff; border-bottom: 2px solid #eee; }
+    .charges-table td { padding: 12px; font-size: 14px; color: #444; border-bottom: 1px solid #f5f5f5; }
+    .charges-table td:last-child { text-align: right; font-weight: 600; }
+    .charges-table th:last-child { text-align: right; }
+
+    .subtotal-section {
+        padding: 18px 40px;
+        background: #f8fbff;
+    }
+
+    .subtotal-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 7px 0;
+        font-size: 14px;
+        color: #555;
+        border-bottom: 1px solid #eee;
+    }
+
+    .subtotal-row:last-child { border-bottom: none; }
+    .subtotal-row.total {
+        font-size: 18px;
+        font-weight: 800;
+        color: #0f4c75;
+        border-top: 2px solid #0f4c75;
+        margin-top: 8px;
+        padding-top: 12px;
+    }
+
+    .bill-footer {
+        padding: 22px 40px;
+        text-align: center;
+        border-top: 2px dashed #e0e0e0;
+    }
+
+    .bill-footer p { font-size: 13px; color: #888; margin-bottom: 5px; }
+    .bill-footer .thank-you { font-size: 18px; font-weight: 700; color: #0f4c75; }
+    .bill-footer .sig-line { margin-top: 25px; display: flex; justify-content: space-between; }
+    .bill-footer .sig-line div { text-align: center; }
+    .bill-footer .sig-line .line { width: 150px; border-top: 1px solid #aaa; margin: 0 auto 5px; }
+    .bill-footer .sig-line .sig-label { font-size: 12px; color: #888; }
+
+    @media print {
+        .navbar, .back-btn, .search-bar, .bill-actions { display: none !important; }
+        body { background: white; }
+        .main-content { padding: 0; }
+        .bill-receipt { box-shadow: none; border-radius: 0; max-width: 100%; }
+        .bill-wrapper { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-brand">🌊 OCEAN RESORT</div>
+  <a class="back-btn" href="staff-dashboard.html">← Back to Dashboard</a>
+</nav>
+
+<div class="main-content">
+  <div class="page-header">
+    <h1>Calculate & Print Bill</h1>
+    <p>Generate and print the bill for a guest reservation.</p>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="billSearchId" placeholder="Enter Reservation ID (e.g. RES-001)" onkeydown="if(event.key==='Enter') loadBill()" />
+    <button onclick="loadBill()">Generate Bill</button>
+  </div>
+
+  <div class="bill-wrapper" id="billWrapper">
+    <div class="bill-actions">
+      <button class="btn btn-secondary" onclick="window.print()">
+        <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Print Bill
+      </button>
+      <button class="btn btn-green" onclick="markPaid()">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        Mark as Paid
+      </button>
+    </div>
+
+    <!-- BILL RECEIPT -->
+    <div class="bill-receipt" id="billReceipt">
+      <div class="bill-top">
+        <div class="hotel-name">🌊 OCEAN VIEW RESORT</div>
+        <div class="hotel-sub">BEACHSIDE LUXURY HOTEL</div>
+        <div class="hotel-addr">Beach Road, Galle, Sri Lanka | Tel: +94 91 234 5678</div>
+        <div class="bill-title">INVOICE / RECEIPT</div>
+      </div>
+
+      <div class="bill-meta">
+        <div class="meta-group">
+          <div class="meta-label">Invoice No.</div>
+          <div class="meta-value" id="bInvoiceNo">INV-001</div>
+        </div>
+        <div class="meta-group">
+          <div class="meta-label">Reservation ID</div>
+          <div class="meta-value" id="bResId">RES-001</div>
+        </div>
+        <div class="meta-group">
+          <div class="meta-label">Invoice Date</div>
+          <div class="meta-value" id="bInvoiceDate">--</div>
+        </div>
+        <div class="meta-group">
+          <div class="meta-label">Payment Status</div>
+          <div class="meta-value" id="bPayStatus" style="color:#e74c3c;">Unpaid</div>
+        </div>
+      </div>
+
+      <div class="bill-section">
+        <h4>Guest Information</h4>
+        <div class="guest-grid">
+          <div class="g-item"><div class="g-label">Guest Name</div><div class="g-value" id="bGuestName">--</div></div>
+          <div class="g-item"><div class="g-label">Contact Number</div><div class="g-value" id="bContact">--</div></div>
+          <div class="g-item"><div class="g-label">NIC / Passport</div><div class="g-value" id="bNic">--</div></div>
+          <div class="g-item"><div class="g-label">Number of Guests</div><div class="g-value" id="bNumGuests">--</div></div>
+          <div class="g-item" style="grid-column: span 2;"><div class="g-label">Address</div><div class="g-value" id="bAddress">--</div></div>
+        </div>
+      </div>
+
+      <div class="bill-section">
+        <h4>Stay Details & Charges</h4>
+        <table class="charges-table">
+          <thead>
+          <tr>
+            <th>Description</th>
+            <th>Room No.</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Nights</th>
+            <th>Rate/Night</th>
+            <th>Amount</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td id="cRoomType">--</td>
+            <td id="cRoomNo">--</td>
+            <td id="cCheckIn">--</td>
+            <td id="cCheckOut">--</td>
+            <td id="cNights">--</td>
+            <td id="cRate">--</td>
+            <td id="cAmount">--</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subtotal-section">
+        <div class="subtotal-row"><span>Room Charges</span><span id="sRoomCharge">--</span></div>
+        <div class="subtotal-row"><span>Service Charge (10%)</span><span id="sService">--</span></div>
+        <div class="subtotal-row"><span>VAT (8%)</span><span id="sVat">--</span></div>
+        <div class="subtotal-row total"><span>TOTAL DUE (LKR)</span><span id="sTotal">--</span></div>
+      </div>
+
+      <div class="bill-footer">
+        <div class="thank-you">Thank You for Choosing Ocean View Resort!</div>
+        <p style="margin-top: 8px;">We hope to welcome you back soon.</p>
+        <p>For inquiries: reservations@oceanresort.lk | +94 91 234 5678</p>
+        <div class="sig-line">
+          <div><div class="line"></div><div class="sig-label">Guest Signature</div></div>
+          <div><div class="line"></div><div class="sig-label">Authorized Signature</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const ROOM_RATES = { Standard: 8500, Deluxe: 12000, Suite: 18500, Presidential: 35000 };
+
+  window.onload = function() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (id) {
+          document.getElementById('billSearchId').value = id;
+          loadBill();
+      }
+  };
+
+  function loadBill() {
+      const id = document.getElementById('billSearchId').value.trim();
+      if (!id) { alert('Please enter a Reservation ID.'); return; }
+
+      fetch(`/Ocean_Resort/ReservationServlet?action=search&by=id&value=${encodeURIComponent(id)}`)
+          .then(r => r.json())
+          .then(data => {
+              if (data.success && data.reservation) {
+                  populateBill(data.reservation);
+              } else {
+                  alert('Reservation not found: ' + id);
+              }
+          })
+          .catch(() => {
+              // Demo fallback
+              const demo = {
+                  reservationId: id, guestName: 'Kasun Perera', contactNumber: '0711234567',
+                  nicNumber: '991234567V', address: 'No 12, Galle Road, Colombo', numGuests: '2',
+                  roomType: 'Deluxe', roomNumber: '201', checkIn: '2025-02-01', checkOut: '2025-02-05', status: 'Active'
+              };
+              populateBill(demo);
+          });
+  }
+
+  function populateBill(r) {
+      const today = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
+      const invoiceNo = 'INV-' + r.reservationId.replace('RES-', '');
+
+      const inDate = new Date(r.checkIn);
+      const outDate = new Date(r.checkOut);
+      const nights = Math.ceil((outDate - inDate) / (1000 * 60 * 60 * 24));
+      const rate = ROOM_RATES[r.roomType] || 0;
+      const roomCharge = nights * rate;
+      const serviceCharge = roomCharge * 0.10;
+      const vat = roomCharge * 0.08;
+      const total = roomCharge + serviceCharge + vat;
+
+      // Meta
+      document.getElementById('bInvoiceNo').textContent = invoiceNo;
+      document.getElementById('bResId').textContent = r.reservationId;
+      document.getElementById('bInvoiceDate').textContent = today;
+
+      // Guest
+      document.getElementById('bGuestName').textContent = r.guestName;
+      document.getElementById('bContact').textContent = r.contactNumber;
+      document.getElementById('bNic').textContent = r.nicNumber;
+      document.getElementById('bNumGuests').textContent = r.numGuests;
+      document.getElementById('bAddress').textContent = r.address;
+
+      // Charges
+      document.getElementById('cRoomType').textContent = r.roomType + ' Room';
+      document.getElementById('cRoomNo').textContent = r.roomNumber;
+      document.getElementById('cCheckIn').textContent = formatDate(r.checkIn);
+      document.getElementById('cCheckOut').textContent = formatDate(r.checkOut);
+      document.getElementById('cNights').textContent = nights;
+      document.getElementById('cRate').textContent = 'LKR ' + rate.toLocaleString();
+      document.getElementById('cAmount').textContent = 'LKR ' + roomCharge.toLocaleString();
+
+      // Subtotals
+      document.getElementById('sRoomCharge').textContent = 'LKR ' + roomCharge.toLocaleString();
+      document.getElementById('sService').textContent = 'LKR ' + serviceCharge.toLocaleString();
+      document.getElementById('sVat').textContent = 'LKR ' + Math.round(vat).toLocaleString();
+      document.getElementById('sTotal').textContent = 'LKR ' + Math.round(total).toLocaleString();
+
+      document.getElementById('billWrapper').classList.add('show');
+  }
+
+  function formatDate(d) {
+      if (!d) return '--';
+      return new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  }
+
+  function markPaid() {
+      const resId = document.getElementById('bResId').textContent;
+      if (!confirm('Mark reservation ' + resId + ' as paid?')) return;
+      document.getElementById('bPayStatus').textContent = 'PAID';
+      document.getElementById('bPayStatus').style.color = '#1a7a4a';
+      // Also call server if needed
+      fetch(`/Ocean_Resort/ReservationServlet?action=markPaid&id=${resId}`, { method: 'POST' }).catch(() => {});
+  }
+</script>
+</body>
+</html>
