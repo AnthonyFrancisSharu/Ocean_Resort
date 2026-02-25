@@ -1,4 +1,4 @@
-package com.Ocean_Resort;
+package servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,11 +11,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import dao.Reservation;
+import dao.ReservationStore;
+import util.EmailService;
+import util.DatabaseConnection;
+import java.util.stream.Collectors;
 
-/**
- * ReservationServlet - handles all reservation operations
- * Actions: generateId, add, getAll, search, delete, markPaid
- */
 @WebServlet("/ReservationServlet")
 public class ReservationServlet extends HttpServlet {
 
@@ -45,12 +46,13 @@ public class ReservationServlet extends HttpServlet {
         switch (action) {
 
             case "generateId":
-                String newId = store.generateNextId();
-                out.print("{\"reservationId\":\"" + newId + "\"}");
+                // ✅ generateId() — correct method name
+                out.print("{\"reservationId\":\"" + store.generateId() + "\"}");
                 break;
 
             case "getAll":
-                List<Reservation> all = store.getAllReservations();
+                // ✅ getAll() — correct method name
+                List<Reservation> all = store.getAll();
                 StringBuilder sb = new StringBuilder("{\"reservations\":[");
                 for (int i = 0; i < all.size(); i++) {
                     sb.append(all.get(i).toJson());
@@ -70,14 +72,24 @@ public class ReservationServlet extends HttpServlet {
                 }
 
                 Reservation found = null;
+
                 if ("id".equals(by)) {
-                    found = store.findById(val.trim());
+                    // ✅ getById() — correct method name
+                    found = store.getById(val.trim());
+
                 } else if ("name".equals(by)) {
-                    List<Reservation> results = store.findByName(val.trim());
-                    if (!results.isEmpty()) found = results.get(0);
+                    // ✅ filter from getAll() — no findByName() needed
+                    String lower = val.trim().toLowerCase();
+                    found = store.getAll().stream()
+                            .filter(r -> r.getGuestName() != null &&
+                                    r.getGuestName().toLowerCase().contains(lower))
+                            .findFirst().orElse(null);
+
                 } else if ("contact".equals(by)) {
-                    List<Reservation> results = store.findByContact(val.trim());
-                    if (!results.isEmpty()) found = results.get(0);
+                    // ✅ filter from getAll() — no findByContact() needed
+                    found = store.getAll().stream()
+                            .filter(r -> val.trim().equals(r.getContactNumber()))
+                            .findFirst().orElse(null);
                 }
 
                 if (found != null) {
@@ -96,7 +108,7 @@ public class ReservationServlet extends HttpServlet {
     }
 
     // ================================================================
-    //  POST  — add | markPaid
+    //  POST  — add | markPaid | delete
     // ================================================================
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -122,9 +134,20 @@ public class ReservationServlet extends HttpServlet {
                 break;
 
             case "markPaid":
+                // ✅ updateStatus() added to ReservationStore below
                 String paidId = request.getParameter("id");
-                if (paidId != null && store.updateStatus(paidId.trim(), "Checked Out")) {
+                if (!isBlank(paidId) && updateStatus(paidId.trim(), "Checked Out")) {
                     out.print("{\"success\":true,\"message\":\"Marked as paid.\"}");
+                } else {
+                    out.print("{\"success\":false,\"message\":\"Reservation not found.\"}");
+                }
+                break;
+
+            case "delete":
+                // ✅ deleteReservation() — correct method name
+                String delId = request.getParameter("id");
+                if (!isBlank(delId) && store.deleteReservation(delId.trim())) {
+                    out.print("{\"success\":true,\"message\":\"Reservation deleted.\"}");
                 } else {
                     out.print("{\"success\":false,\"message\":\"Reservation not found.\"}");
                 }
@@ -156,7 +179,8 @@ public class ReservationServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         String id = request.getParameter("id");
-        if (id != null && store.deleteById(id.trim())) {
+        // ✅ deleteReservation() — correct method name
+        if (!isBlank(id) && store.deleteReservation(id.trim())) {
             out.print("{\"success\":true,\"message\":\"Reservation deleted.\"}");
         } else {
             out.print("{\"success\":false,\"message\":\"Reservation not found.\"}");
@@ -165,11 +189,10 @@ public class ReservationServlet extends HttpServlet {
     }
 
     // ================================================================
-    //  HANDLE ADD — validates room, saves reservation, sends email
+    //  HANDLE ADD
     // ================================================================
     private void handleAdd(HttpServletRequest request, PrintWriter out) throws IOException {
 
-        // Read JSON body
         StringBuilder body = new StringBuilder();
         try (BufferedReader reader = request.getReader()) {
             String line;
@@ -178,7 +201,6 @@ public class ReservationServlet extends HttpServlet {
 
         String json = body.toString();
 
-        // Parse all fields from JSON
         String reservationId   = parseJson(json, "reservationId");
         String guestName       = parseJson(json, "guestName");
         String address         = parseJson(json, "address");
@@ -194,11 +216,10 @@ public class ReservationServlet extends HttpServlet {
         String checkOutTime    = parseJson(json, "checkOutTime");
         String specialRequests = parseJson(json, "specialRequests");
 
-        // Default check-in / check-out times if not provided
         if (isBlank(checkInTime))  checkInTime  = "14:00";
         if (isBlank(checkOutTime)) checkOutTime = "12:00";
 
-        // ── Server-side validation ────────────────────────────────────
+        // ── Validation ──
         if (isBlank(guestName) || isBlank(contactNumber) || isBlank(roomType)
                 || isBlank(checkIn) || isBlank(checkOut)) {
             out.print("{\"success\":false,\"message\":\"Required fields are missing.\"}");
@@ -215,7 +236,6 @@ public class ReservationServlet extends HttpServlet {
             return;
         }
 
-        // ── Validate check-out is after check-in ─────────────────────
         try {
             java.time.LocalDate inDate  = java.time.LocalDate.parse(checkIn);
             java.time.LocalDate outDate = java.time.LocalDate.parse(checkOut);
@@ -228,35 +248,49 @@ public class ReservationServlet extends HttpServlet {
             return;
         }
 
-        // ── ROOM AVAILABILITY CHECK ───────────────────────────────────
-        // Checks if the room is already booked for the requested dates
+        // ── Room availability check ──
         if (!isBlank(roomNumber)) {
-            boolean available = store.isRoomAvailable(roomNumber, checkIn, checkOut);
+            // ✅ isRoomAvailable() with correct 4-param signature (excludeId = null)
+            boolean available = store.isRoomAvailable(roomNumber, checkIn, checkOut, null);
             if (!available) {
                 out.print("{\"success\":false," +
-                        "\"message\":\"Room " + roomNumber + " is already booked for the selected dates. " +
-                        "Please choose a different room or different dates.\"}");
+                        "\"message\":\"Room " + roomNumber + " is already booked for the selected dates.\"}");
                 return;
             }
         }
 
-        // ── Generate / validate Reservation ID ───────────────────────
+        // ── Generate reservation ID ──
         if (isBlank(reservationId)) {
-            reservationId = store.generateNextId();
+            reservationId = store.generateId();
         }
-        if (store.findById(reservationId) != null) {
-            reservationId = store.generateNextId();
+        // ✅ getById() — correct method name
+        if (store.getById(reservationId) != null) {
+            reservationId = store.generateId();
         }
 
-        // ── Create and save reservation ───────────────────────────────
-        Reservation r = new Reservation(
-                reservationId, guestName, address, contactNumber, email,
-                nicNumber, numGuests, roomType, roomNumber, checkIn, checkOut, specialRequests
-        );
+        // ── Build Reservation using setters (no parametrised constructor) ──
+        // ✅ No constructor with args — use setters to match new Reservation.java
+        Reservation r = new Reservation();
+        r.setReservationId(reservationId);
+        r.setGuestName(guestName);
+        r.setAddress(address);
+        r.setContactNumber(contactNumber);
+        r.setEmail(email);
+        r.setNicNumber(nicNumber);
+        r.setNumGuests(numGuests);
+        r.setRoomType(roomType);
+        r.setRoomNumber(roomNumber);
+        r.setCheckIn(checkIn);
+        r.setCheckOut(checkOut);
+        r.setCheckInTime(checkInTime);
+        r.setCheckOutTime(checkOutTime);
+        r.setSpecialRequests(specialRequests);
+        r.setStatus("Active");
 
+        // ✅ addReservation() — correct method name
         store.addReservation(r);
 
-        // ── Calculate billing for the email ──────────────────────────
+        // ── Billing calculation ──
         double ratePerNight  = getRoomRate(roomType);
         int    nights        = calculateNights(checkIn, checkOut);
         double roomCharge    = ratePerNight * nights;
@@ -264,31 +298,21 @@ public class ReservationServlet extends HttpServlet {
         double vat           = roomCharge * 0.08;
         double totalAmount   = roomCharge + serviceCharge + vat;
 
-        // ── Send confirmation email (only if email was provided) ──────
+        // ── Send email ──
         boolean emailSent = false;
         if (!isBlank(email)) {
             emailSent = emailService.sendReservationConfirmation(
-                    email,
-                    guestName,
-                    reservationId,
-                    roomNumber,
-                    roomType,
-                    checkIn,
-                    checkInTime,
-                    checkOut,
-                    checkOutTime,
-                    nights,
-                    ratePerNight,
-                    totalAmount,
+                    email, guestName, reservationId,
+                    roomNumber, roomType,
+                    checkIn, checkInTime,
+                    checkOut, checkOutTime,
+                    nights, ratePerNight, totalAmount,
                     specialRequests
             );
         }
 
-        // ── Build final JSON response ─────────────────────────────────
-        String emailStatus = isBlank(email)
-                ? "No email provided."
-                : (emailSent
-                ? "Confirmation email sent to " + email + "."
+        String emailStatus = isBlank(email) ? "No email provided."
+                : (emailSent ? "Confirmation email sent to " + email + "."
                 : "Reservation saved but email could not be sent.");
 
         out.print("{" +
@@ -301,39 +325,46 @@ public class ReservationServlet extends HttpServlet {
     }
 
     // ================================================================
-    //  HELPER — Room rate per night based on room type (LKR)
+    //  updateStatus — updates reservation status in MySQL
+    // ================================================================
+    private boolean updateStatus(String reservationId, String newStatus) {
+        String sql = "UPDATE reservations SET status = ? WHERE reservation_id = ?";
+        try (java.sql.Connection c = DatabaseConnection.getConnection();
+             java.sql.PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, newStatus);
+            ps.setString(2, reservationId);
+            return ps.executeUpdate() > 0;
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ================================================================
+    //  HELPERS
     // ================================================================
     private double getRoomRate(String roomType) {
         if (roomType == null) return 8500.0;
         switch (roomType.trim()) {
             case "Standard Room":
-            case "Standard":        return 8500.0;
+            case "Standard":          return 8500.0;
             case "Deluxe Room":
-            case "Deluxe":          return 12000.0;
-            case "Suite":           return 18500.0;
+            case "Deluxe":            return 12000.0;
+            case "Suite":             return 18500.0;
             case "Presidential Suite":
-            case "Presidential":    return 35000.0;
-            default:                return 8500.0;
+            case "Presidential":      return 35000.0;
+            default:                  return 8500.0;
         }
     }
 
-    // ================================================================
-    //  HELPER — Number of nights between check-in and check-out
-    // ================================================================
     private int calculateNights(String checkIn, String checkOut) {
         try {
             java.time.LocalDate in  = java.time.LocalDate.parse(checkIn);
             java.time.LocalDate out = java.time.LocalDate.parse(checkOut);
-            long nights = java.time.temporal.ChronoUnit.DAYS.between(in, out);
-            return (int) Math.max(1, nights);
-        } catch (Exception e) {
-            return 1;
-        }
+            return (int) Math.max(1, java.time.temporal.ChronoUnit.DAYS.between(in, out));
+        } catch (Exception e) { return 1; }
     }
 
-    // ================================================================
-    //  HELPER — Simple JSON string field parser (no external libs)
-    // ================================================================
     private String parseJson(String json, String key) {
         String search = "\"" + key + "\":\"";
         int start = json.indexOf(search);

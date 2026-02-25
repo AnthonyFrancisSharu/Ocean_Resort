@@ -1,0 +1,28 @@
+package util;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+/**
+ * DatabaseConnection - Provides MySQL connection
+ * Change DB_USER and DB_PASS to match your MySQL credentials
+ */
+public class DatabaseConnection {
+
+    private static final String URL      = "jdbc:mysql://localhost:3306/ocean_resort?useSSL=false&serverTimezone=UTC";
+    private static final String DB_USER  = "root";       // ← change if different
+    private static final String DB_PASS  = ""; // ← change to your MySQL password
+
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("MySQL JDBC Driver not found!", e);
+        }
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, DB_USER, DB_PASS);
+    }
+}

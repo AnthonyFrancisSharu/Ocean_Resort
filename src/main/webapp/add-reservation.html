@@ -6,7 +6,11 @@
     <title>Ocean Resort - Add Reservation</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; min-height: 100vh; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a1628 0%, #0a2540 40%, #0d3559 70%, #0a2540 100%);
+        }
 
         .navbar {
             background: linear-gradient(135deg, #0f4c75, #1b6ca8);
@@ -38,8 +42,8 @@
         .main-content { padding: 35px 40px; }
 
         .page-header { margin-bottom: 28px; }
-        .page-header h1 { font-size: 24px; color: #1a1a2e; font-weight: 700; }
-        .page-header p { color: #888; font-size: 14px; margin-top: 4px; }
+        .page-header h1 { font-size: 24px; color: #ffffff; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .page-header p { color: rgba(255,255,255,0.80); font-size: 14px; margin-top: 4px; }
 
         /* Error banner */
         .error-banner {
@@ -60,9 +64,9 @@
         .error-banner svg { width: 20px; height: 20px; fill: #e74c3c; flex-shrink: 0; }
 
         .form-card {
-            background: white;
+            background: rgba(255,255,255,0.97);
             border-radius: 16px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
             overflow: hidden;
         }
 
@@ -125,7 +129,6 @@
         .form-group.error textarea { border-color: #e74c3c; }
         .form-group.error .field-error { display: block; }
 
-        /* Room number availability status */
         .room-status {
             font-size: 12px;
             font-weight: 600;
@@ -181,7 +184,6 @@
         .btn-primary:hover { background: linear-gradient(135deg, #0d3b6e, #0f4c75); box-shadow: 0 5px 20px rgba(15,76,117,0.3); transform: translateY(-1px); }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        /* Success Modal */
         .modal-overlay {
             position: fixed; inset: 0;
             background: rgba(0,0,0,0.5);
@@ -214,7 +216,7 @@
 
 <nav class="navbar">
     <div class="navbar-brand"><h2>🌊 OCEAN RESORT</h2></div>
-    <a class="back-btn" href="staff-dashboard.html">
+    <a class="back-btn" href="javascript:void(0)" onclick="goToDashboard()">
         <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
         Back to Dashboard
     </a>
@@ -226,7 +228,6 @@
         <p>Fill in the guest details and booking information below.</p>
     </div>
 
-    <!-- Error Banner — shown when room is already booked -->
     <div class="error-banner" id="errorBanner">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
         <span id="errorText">An error occurred.</span>
@@ -234,7 +235,6 @@
 
     <div class="form-card">
 
-        <!-- Guest Info Section -->
         <div class="form-section">
             <div class="section-header">
                 <div class="sec-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
@@ -284,7 +284,6 @@
             </div>
         </div>
 
-        <!-- Booking Details Section -->
         <div class="form-section">
             <div class="section-header">
                 <div class="sec-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
@@ -304,10 +303,8 @@
                 </div>
                 <div class="form-group">
                     <label>Room Number <span class="required">*</span></label>
-                    <input type="text" id="roomNumber" placeholder="e.g. 101"
-                           oninput="clearRoomStatus()" />
+                    <input type="text" id="roomNumber" placeholder="e.g. 101" oninput="clearRoomStatus()" />
                     <span class="field-error">Please enter the room number.</span>
-                    <!-- Live availability indicator -->
                     <div class="room-status" id="roomStatus">
                         <svg id="roomStatusIcon" viewBox="0 0 24 24"></svg>
                         <span id="roomStatusText"></span>
@@ -329,7 +326,6 @@
                 </div>
             </div>
 
-            <!-- Room Rates Reference -->
             <div class="room-rates">
                 <h4>📋 Room Rates Per Night (LKR)</h4>
                 <div class="rates-grid">
@@ -340,7 +336,6 @@
                 </div>
             </div>
 
-            <!-- Cost Preview -->
             <div class="cost-preview" id="costPreview" style="display:none;">
                 <div>
                     <div class="cost-label">Estimated Total Cost</div>
@@ -350,7 +345,6 @@
             </div>
         </div>
 
-        <!-- Action Buttons -->
         <div class="form-actions">
             <button class="btn btn-secondary" onclick="clearForm()">
                 <svg viewBox="0 0 24 24" style="fill:#555;"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
@@ -364,7 +358,6 @@
     </div>
 </div>
 
-<!-- Success Modal -->
 <div class="modal-overlay" id="successModal">
     <div class="modal">
         <div class="success-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
@@ -396,50 +389,35 @@
     function generateReservationId() {
         fetch('/Ocean_Resort/ReservationServlet?action=generateId')
             .then(r => r.json())
-            .then(data => {
-                document.getElementById('reservationId').value = data.reservationId || generateLocalId();
-            })
-            .catch(() => {
-                document.getElementById('reservationId').value = generateLocalId();
-            });
+            .then(data => { document.getElementById('reservationId').value = data.reservationId || generateLocalId(); })
+            .catch(() => { document.getElementById('reservationId').value = generateLocalId(); });
     }
 
-    function generateLocalId() {
-        return 'RES-' + String(Math.floor(Math.random() * 900) + 100);
-    }
+    function generateLocalId() { return 'RES-' + String(Math.floor(Math.random() * 900) + 100); }
 
     function calculateCost() {
         const roomType = document.getElementById('roomType').value;
         const checkIn  = document.getElementById('checkIn').value;
         const checkOut = document.getElementById('checkOut').value;
-
         if (roomType && checkIn && checkOut) {
             const nights = Math.ceil((new Date(checkOut) - new Date(checkIn)) / 86400000);
             if (nights > 0) {
                 const rate  = ROOM_RATES[roomType] || 0;
                 const total = nights * rate;
                 document.getElementById('costPreview').style.display = 'flex';
-                document.getElementById('costDetail').textContent =
-                    nights + ' night(s) × LKR ' + rate.toLocaleString();
-                document.getElementById('costValue').textContent =
-                    'LKR ' + total.toLocaleString();
+                document.getElementById('costDetail').textContent = nights + ' night(s) × LKR ' + rate.toLocaleString();
+                document.getElementById('costValue').textContent   = 'LKR ' + total.toLocaleString();
                 document.getElementById('checkOut').min = checkIn;
             }
         }
     }
 
-    // ── Clear room availability indicator when user changes room/dates ──
-    function clearRoomStatus() {
-        const el = document.getElementById('roomStatus');
-        el.className = 'room-status';
-    }
+    function clearRoomStatus() { document.getElementById('roomStatus').className = 'room-status'; }
 
-    // ── Show availability indicator next to room number field ──
     function showRoomStatus(available) {
-        const el       = document.getElementById('roomStatus');
-        const iconEl   = document.getElementById('roomStatusIcon');
-        const textEl   = document.getElementById('roomStatusText');
-
+        const el = document.getElementById('roomStatus');
+        const iconEl = document.getElementById('roomStatusIcon');
+        const textEl = document.getElementById('roomStatusText');
         if (available) {
             el.className = 'room-status available';
             iconEl.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
@@ -452,126 +430,82 @@
     }
 
     function showError(msg) {
-        const banner = document.getElementById('errorBanner');
         document.getElementById('errorText').textContent = msg;
-        banner.classList.add('show');
-        // Scroll to top so user sees the error
+        document.getElementById('errorBanner').classList.add('show');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function hideError() {
-        document.getElementById('errorBanner').classList.remove('show');
-    }
+    function hideError() { document.getElementById('errorBanner').classList.remove('show'); }
 
     function validateForm() {
         let valid = true;
         hideError();
-
         const fields = [
-            { id: 'guestName',     msg: 'Please enter the guest name.' },
-            { id: 'address',       msg: 'Please enter the address.' },
-            { id: 'nicNumber',     msg: 'Please enter NIC or Passport number.' },
-            { id: 'numGuests',     msg: 'Please select number of guests.' },
-            { id: 'roomType',      msg: 'Please select a room type.' },
-            { id: 'roomNumber',    msg: 'Please enter the room number.' },
-            { id: 'checkIn',       msg: 'Please select check-in date.' },
-            { id: 'checkOut',      msg: 'Please select check-out date.' }
+            { id: 'guestName',  msg: 'Please enter the guest name.' },
+            { id: 'address',    msg: 'Please enter the address.' },
+            { id: 'nicNumber',  msg: 'Please enter NIC or Passport number.' },
+            { id: 'numGuests',  msg: 'Please select number of guests.' },
+            { id: 'roomType',   msg: 'Please select a room type.' },
+            { id: 'roomNumber', msg: 'Please enter the room number.' },
+            { id: 'checkIn',    msg: 'Please select check-in date.' },
+            { id: 'checkOut',   msg: 'Please select check-out date.' }
         ];
-
         fields.forEach(f => {
-            const el    = document.getElementById(f.id);
+            const el = document.getElementById(f.id);
             const group = el.closest('.form-group');
             const errEl = group.querySelector('.field-error');
-            if (!el.value.trim()) {
-                group.classList.add('error');
-                if (errEl) errEl.textContent = f.msg;
-                valid = false;
-            } else {
-                group.classList.remove('error');
-            }
+            if (!el.value.trim()) { group.classList.add('error'); if (errEl) errEl.textContent = f.msg; valid = false; }
+            else { group.classList.remove('error'); }
         });
-
-        // Contact number must be 10 digits
-        const contact      = document.getElementById('contactNumber').value.trim();
+        const contact = document.getElementById('contactNumber').value.trim();
         const contactGroup = document.getElementById('contactNumber').closest('.form-group');
-        if (!/^[0-9]{10}$/.test(contact)) {
-            contactGroup.classList.add('error');
-            valid = false;
-        } else {
-            contactGroup.classList.remove('error');
-        }
-
-        // Check-out must be after check-in
+        if (!/^[0-9]{10}$/.test(contact)) { contactGroup.classList.add('error'); valid = false; }
+        else { contactGroup.classList.remove('error'); }
         const checkIn  = document.getElementById('checkIn').value;
         const checkOut = document.getElementById('checkOut').value;
         if (checkIn && checkOut && new Date(checkOut) <= new Date(checkIn)) {
             document.getElementById('checkOut').closest('.form-group').classList.add('error');
-            document.getElementById('checkOut').closest('.form-group')
-                .querySelector('.field-error').textContent = 'Check-out must be after check-in date.';
+            document.getElementById('checkOut').closest('.form-group').querySelector('.field-error').textContent = 'Check-out must be after check-in date.';
             valid = false;
         }
-
         return valid;
     }
 
     function submitReservation() {
         if (!validateForm()) return;
-
         const saveBtn = document.getElementById('saveBtn');
         saveBtn.disabled = true;
         saveBtn.innerHTML = '<svg viewBox="0 0 24 24" style="fill:white;animation:spin 1s linear infinite;"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg> Saving...';
-
-        // Build the JSON — keys must EXACTLY match what parseJson() looks for in the servlet
         const data = {
-            reservationId:   document.getElementById('reservationId').value.trim(),
-            guestName:       document.getElementById('guestName').value.trim(),
-            address:         document.getElementById('address').value.trim(),
-            contactNumber:   document.getElementById('contactNumber').value.trim(),
-            email:           document.getElementById('email').value.trim(),
-            nicNumber:       document.getElementById('nicNumber').value.trim(),
-            numGuests:       document.getElementById('numGuests').value,
-            roomType:        document.getElementById('roomType').value,
-            roomNumber:      document.getElementById('roomNumber').value.trim(),
-            checkIn:         document.getElementById('checkIn').value,
-            checkOut:        document.getElementById('checkOut').value,
-            checkInTime:     "14:00",
-            checkOutTime:    "12:00",
+            reservationId: document.getElementById('reservationId').value.trim(),
+            guestName: document.getElementById('guestName').value.trim(),
+            address: document.getElementById('address').value.trim(),
+            contactNumber: document.getElementById('contactNumber').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            nicNumber: document.getElementById('nicNumber').value.trim(),
+            numGuests: document.getElementById('numGuests').value,
+            roomType: document.getElementById('roomType').value,
+            roomNumber: document.getElementById('roomNumber').value.trim(),
+            checkIn: document.getElementById('checkIn').value,
+            checkOut: document.getElementById('checkOut').value,
+            checkInTime: "14:00", checkOutTime: "12:00",
             specialRequests: document.getElementById('specialRequests').value.trim()
         };
-
         fetch('/Ocean_Resort/ReservationServlet?action=add', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(data)
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
         })
         .then(r => r.json())
         .then(res => {
             saveBtn.disabled = false;
             saveBtn.innerHTML = '<svg viewBox="0 0 24 24" style="fill:white;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Save Reservation';
-
             if (res.success) {
-                // ✅ SUCCESS — show modal
-                document.getElementById('savedResId').textContent =
-                    res.reservationId || data.reservationId;
-
-                // Show email sent note if applicable
+                document.getElementById('savedResId').textContent = res.reservationId || data.reservationId;
                 const emailNote = document.getElementById('emailNote');
-                if (res.emailSent) {
-                    emailNote.textContent = '📧 Confirmation email sent to guest.';
-                } else {
-                    emailNote.textContent = '';
-                }
-
+                emailNote.textContent = res.emailSent ? '📧 Confirmation email sent to guest.' : '';
                 document.getElementById('successModal').classList.add('show');
-
-                // Show available status on room field
                 showRoomStatus(true);
-
             } else {
-                // ❌ FAILED — show error banner (room taken, validation failed, etc.)
                 showError(res.message || 'Could not save reservation. Please try again.');
-
-                // If room is unavailable, highlight the room number field too
                 if (res.message && res.message.includes('already booked')) {
                     showRoomStatus(false);
                     document.getElementById('roomNumber').closest('.form-group').classList.add('error');
@@ -579,7 +513,6 @@
             }
         })
         .catch(err => {
-            // ❌ Network/server error — show error, DO NOT show success modal
             saveBtn.disabled = false;
             saveBtn.innerHTML = '<svg viewBox="0 0 24 24" style="fill:white;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Save Reservation';
             showError('Unable to connect to the server. Please check your connection and try again.');
@@ -588,14 +521,11 @@
     }
 
     function clearForm() {
-        ['guestName','address','contactNumber','email','nicNumber',
-         'roomNumber','specialRequests'].forEach(id => {
-            document.getElementById(id).value = '';
-        });
-        document.getElementById('numGuests').value     = '';
-        document.getElementById('roomType').value      = '';
-        document.getElementById('checkIn').value       = '';
-        document.getElementById('checkOut').value      = '';
+        ['guestName','address','contactNumber','email','nicNumber','roomNumber','specialRequests'].forEach(id => { document.getElementById(id).value = ''; });
+        document.getElementById('numGuests').value = '';
+        document.getElementById('roomType').value = '';
+        document.getElementById('checkIn').value = '';
+        document.getElementById('checkOut').value = '';
         document.getElementById('costPreview').style.display = 'none';
         document.querySelectorAll('.form-group.error').forEach(g => g.classList.remove('error'));
         clearRoomStatus();
@@ -608,8 +538,14 @@
         generateReservationId();
     }
 
+    if (document.referrer && document.referrer.includes('admin-dashboard')) { sessionStorage.setItem('cameFrom', 'admin'); }
+    else if (document.referrer && document.referrer.includes('staff-dashboard')) { sessionStorage.setItem('cameFrom', 'staff'); }
+
     function goToDashboard() {
-        window.location.href = 'dashboard.html';
+        const from = sessionStorage.getItem('cameFrom');
+        const path = window.location.pathname.substring(0, window.location.pathname.indexOf("/",2)) || "/Ocean_Resort";
+        if (from === 'admin') { window.location.href = path + '/admin-dashboard.html'; }
+        else { window.location.href = path + '/staff-dashboard.html'; }
     }
 </script>
 </body>

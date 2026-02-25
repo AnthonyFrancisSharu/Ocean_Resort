@@ -1,4 +1,4 @@
-package com.Ocean_Resort;
+package util;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.*;

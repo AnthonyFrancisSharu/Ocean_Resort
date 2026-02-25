@@ -1,4 +1,4 @@
-package com.Ocean_Resort;
+package servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

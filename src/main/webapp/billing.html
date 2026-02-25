@@ -6,7 +6,16 @@
   <title>Ocean Resort - Billing</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; min-height: 100vh; }
+    body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background:
+        linear-gradient(135deg,
+            rgba(10, 21, 40, 0.82) 0%,
+            rgba(15, 76, 117, 0.78) 50%,
+            rgba(10, 21, 40, 0.85) 100%),
+        url('images/bg.jpg') center center / cover no-repeat fixed;
+}
 
     .navbar {
         background: linear-gradient(135deg, #0f4c75, #1b6ca8);
@@ -19,8 +28,8 @@
 
     .main-content { padding: 35px 40px; }
     .page-header { margin-bottom: 25px; }
-    .page-header h1 { font-size: 24px; color: #1a1a2e; font-weight: 700; }
-    .page-header p { color: #888; font-size: 14px; margin-top: 4px; }
+    .page-header h1 { font-size: 24px; color: #ffffff; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    .page-header p { color: rgba(255,255,255,0.80); font-size: 14px; margin-top: 4px; }
 
     /* Search Bar */
     .search-bar {
@@ -186,13 +195,14 @@
         .bill-receipt { box-shadow: none; border-radius: 0; max-width: 100%; }
         .bill-wrapper { display: block !important; }
     }
+.toast-show { transform: translateX(0) !important; }
   </style>
 </head>
 <body>
 
 <nav class="navbar">
   <div class="navbar-brand">🌊 OCEAN RESORT</div>
-  <a class="back-btn" href="staff-dashboard.html">← Back to Dashboard</a>
+  <a class="back-btn" href="javascript:void(0)" onclick="goToDashboard()">← Back to Dashboard</a>
 </nav>
 
 <div class="main-content">
@@ -295,7 +305,7 @@
       <div class="bill-footer">
         <div class="thank-you">Thank You for Choosing Ocean View Resort!</div>
         <p style="margin-top: 8px;">We hope to welcome you back soon.</p>
-        <p>For inquiries: reservations@oceanresort.lk | +94 91 234 5678</p>
+        <p>For inquiries: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dfadbaacbaada9beabb6b0b1ac9fb0bcbabeb1adbaacb0adabf1b3b4">[email&#160;protected]</a> | +94 91 234 5678</p>
         <div class="sig-line">
           <div><div class="line"></div><div class="sig-label">Guest Signature</div></div>
           <div><div class="line"></div><div class="sig-label">Authorized Signature</div></div>
@@ -305,7 +315,7 @@
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   const ROOM_RATES = { Standard: 8500, Deluxe: 12000, Suite: 18500, Presidential: 35000 };
 
   window.onload = function() {
@@ -393,10 +403,51 @@
       const resId = document.getElementById('bResId').textContent;
       if (!confirm('Mark reservation ' + resId + ' as paid?')) return;
       document.getElementById('bPayStatus').textContent = 'PAID';
-      document.getElementById('bPayStatus').style.color = '#1a7a4a';
-      // Also call server if needed
-      fetch(`/Ocean_Resort/ReservationServlet?action=markPaid&id=${resId}`, { method: 'POST' }).catch(() => {});
+      document.getElementById('bPayStatus').style.background = '#e8f8ef';
+      document.getElementById('bPayStatus').style.color = '#27ae60';
+
+      fetch('/Ocean_Resort/ReservationServlet?action=markPaid&id=' + resId, { method: 'POST' })
+          .then(r => r.json())
+          .then(res => {
+              if (res.success) {
+                  showToast('✅ Marked as paid successfully!');
+              } else {
+                  showToast('⚠️ Could not update status: ' + res.message, true);
+              }
+          })
+          .catch(() => showToast('⚠️ Server error. Status updated locally only.', true));
   }
+
+  function printBill() {
+      window.print();
+  }
+
+  function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.background = isError ? '#c0392b' : '#1a7a4a';
+      t.style.transform = 'translateX(0)';
+      setTimeout(() => t.style.transform = 'translateX(120%)', 3500);
+  }
+
+  // ── Back to Dashboard: redirect based on session role ──
+  function goToDashboard() {
+      fetch('/Ocean_Resort/DashboardServlet')
+          .then(r => r.json())
+          .then(data => {
+              if (data.role === 'ADMIN') {
+                  window.location.href = 'admin-dashboard.html';
+              } else {
+                  window.location.href = 'staff-dashboard.html';
+              }
+          })
+          .catch(() => {
+              window.location.href = 'staff-dashboard.html';
+          });
+  }
+
+  // ── Init ──
 </script>
+<div id="toast" style="position:fixed;top:20px;right:20px;background:#1a7a4a;color:white;padding:14px 20px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,0.2);transform:translateX(120%);transition:transform 0.4s;z-index:9999;" class=""></div>
 </body>
 </html>

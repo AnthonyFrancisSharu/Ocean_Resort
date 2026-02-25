@@ -6,7 +6,16 @@
   <title>Ocean Resort - Help</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; min-height: 100vh; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        background:
+            linear-gradient(135deg,
+                rgba(10, 21, 40, 0.82) 0%,
+                rgba(15, 76, 117, 0.78) 50%,
+                rgba(10, 21, 40, 0.85) 100%),
+            url('images/welcome.jpg') center center / cover no-repeat fixed;
+    }
 
     .navbar {
         background: linear-gradient(135deg, #0f4c75, #1b6ca8);
@@ -38,8 +47,8 @@
         margin-bottom: 30px;
         text-align: center;
     }
-    .page-header h1 { font-size: 26px; color: #1a1a2e; font-weight: 700; }
-    .page-header p { color: #888; font-size: 14px; margin-top: 6px; }
+    .page-header h1 { font-size: 26px; color: #ffffff; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    .page-header p { color: rgba(255,255,255,0.85); font-size: 14px; margin-top: 6px; }
 
     .cards-grid {
         display: grid;
@@ -50,10 +59,10 @@
     .card-full { grid-column: 1 / -1; }
 
     .help-card {
-        background: white;
+        background: rgba(255,255,255,0.97);
         border-radius: 16px;
         padding: 28px 30px;
-        box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
     }
 
     .help-card .card-header {
@@ -161,7 +170,7 @@
 
 <nav class="navbar">
   <div class="navbar-brand">🌊 OCEAN RESORT</div>
-  <a class="back-btn" href="staff-dashboard.html">← Back to Dashboard</a>
+  <a class="back-btn" href="javascript:void(0)" onclick="goToDashboard()">← Back to Dashboard</a>
 </nav>
 
 <div class="page-wrapper">
@@ -282,7 +291,7 @@
           </div>
           <div class="contact-item">
             <div class="c-label">Reservations Email</div>
-            <div class="c-value">reservations@oceanresort.lk</div>
+            <div class="c-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f587908690878394819c9a9b86b59a9690949b8790869a8781db999e">[email&#160;protected]</a></div>
           </div>
           <div class="contact-item">
             <div class="c-label">Location</div>
@@ -295,5 +304,21 @@
   </div>
 </div>
 
+<script>
+  function goToDashboard() {
+      fetch('/Ocean_Resort/DashboardServlet')
+          .then(r => r.json())
+          .then(data => {
+              if (data.role === 'ADMIN') {
+                  window.location.href = 'admin-dashboard.html';
+              } else {
+                  window.location.href = 'staff-dashboard.html';
+              }
+          })
+          .catch(() => {
+              window.location.href = 'staff-dashboard.html';
+          });
+  }
+</script>
 </body>
 </html>

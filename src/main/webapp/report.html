@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ocean Resort - Reports</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    :root {
+        --deep:   #0a2540;
+        --mid:    #0f4c75;
+        --light:  #1b6ca8;
+        --gold:   #c9a84c;
+        --green:  #27ae60;
+        --red:    #e74c3c;
+        --bg:     #f0f4f8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); min-height: 100vh; }
+
+    /* NAVBAR */
+    .navbar {
+        background: linear-gradient(135deg, var(--deep), var(--mid));
+        padding: 0 30px; display: flex; align-items: center;
+        justify-content: space-between; height: 65px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+        position: sticky; top: 0; z-index: 100;
+    }
+    .navbar-brand { color: white; font-family: 'Playfair Display', serif; font-size: 20px; }
+    .navbar-brand span { font-family: 'DM Sans', sans-serif; font-size: 11px; opacity: 0.6; display: block; letter-spacing: 3px; }
+    .back-btn {
+        background: rgba(255,255,255,0.12); color: white;
+        border: 1px solid rgba(255,255,255,0.25); padding: 9px 20px;
+        border-radius: 8px; cursor: pointer; font-size: 13px;
+        text-decoration: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.22); }
+
+    /* PAGE */
+    .page { padding: 35px 40px; }
+
+    .page-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--deep); }
+    .page-header p { font-size: 14px; color: #888; margin-top: 4px; }
+    .year-select {
+        padding: 10px 16px; border: 2px solid #e0e0e0; border-radius: 10px;
+        font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none;
+        background: white; cursor: pointer; color: var(--deep);
+    }
+    .year-select:focus { border-color: var(--light); }
+
+    /* SUMMARY CARDS */
+    .summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+    .sum-card {
+        background: white; border-radius: 16px; padding: 22px 24px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        display: flex; flex-direction: column; gap: 6px;
+        position: relative; overflow: hidden;
+        border-top: 4px solid transparent;
+        transition: transform 0.2s;
+    }
+    .sum-card:hover { transform: translateY(-3px); }
+    .sum-card.blue  { border-top-color: var(--light); }
+    .sum-card.green { border-top-color: var(--green); }
+    .sum-card.gold  { border-top-color: var(--gold); }
+    .sum-card.red   { border-top-color: var(--red); }
+    .sum-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 1.5px; }
+    .sum-val   { font-size: 28px; font-weight: 700; color: var(--deep); line-height: 1; }
+    .sum-sub   { font-size: 12px; color: #aaa; }
+    .sum-icon  { position: absolute; top: 16px; right: 18px; font-size: 28px; opacity: 0.15; }
+
+    /* CHARTS ROW */
+    .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 22px; margin-bottom: 22px; }
+    .chart-card {
+        background: white; border-radius: 16px; padding: 24px 26px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .chart-title {
+        font-size: 15px; font-weight: 700; color: var(--deep);
+        margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .chart-title .ctag {
+        font-size: 11px; font-weight: 600; padding: 3px 10px;
+        border-radius: 20px; letter-spacing: 1px;
+        background: rgba(27,108,168,0.1); color: var(--light);
+        border: 1px solid rgba(27,108,168,0.2);
+    }
+    .chart-wrap { position: relative; }
+
+    /* BOTTOM ROW */
+    .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 22px; }
+
+    /* TABLE */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+        text-align: left; font-size: 11px; font-weight: 600;
+        color: #999; letter-spacing: 1px; text-transform: uppercase;
+        padding: 0 0 12px; border-bottom: 2px solid #f0f0f0;
+    }
+    .data-table td {
+        padding: 12px 0; font-size: 13px; color: #444;
+        border-bottom: 1px solid #f8f8f8; vertical-align: middle;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .badge-insert { background: #e8f8ef; color: #1a7a4a; }
+    .badge-update { background: #e8f0fb; color: var(--light); }
+    .badge-delete { background: #fef0f0; color: var(--red); }
+
+    /* OCCUPANCY TABLE */
+    .occ-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+    .occ-row:last-child { border-bottom: none; }
+    .occ-label { font-size: 13px; color: #444; width: 120px; flex-shrink: 0; }
+    .occ-bar-wrap { flex: 1; background: #f0f4f8; border-radius: 20px; height: 10px; overflow: hidden; }
+    .occ-bar { height: 100%; border-radius: 20px; transition: width 1s ease; }
+    .occ-pct { font-size: 13px; font-weight: 700; color: var(--deep); width: 45px; text-align: right; }
+
+    /* FULL WIDTH CARD */
+    .full-card {
+        background: white; border-radius: 16px; padding: 24px 26px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 22px;
+    }
+    .full-card .tbl-header {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .loading-row { text-align: center; padding: 30px; color: #bbb; font-size: 14px; }
+    .empty-row   { text-align: center; padding: 30px; color: #ccc; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-brand">
+    🌊 Ocean Resort
+    <span>REPORTS & ANALYTICS</span>
+  </div>
+  <a class="back-btn" href="javascript:void(0)" onclick="goToDashboard()">← Back to Dashboard</a>
+</nav>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <h1>Reports & Analytics</h1>
+      <p>Business intelligence and decision-making reports for Ocean View Resort.</p>
+    </div>
+    <select class="year-select" id="yearSelect" onchange="loadAll()">
+      <option value="2025">2025</option>
+      <option value="2026" selected>2026</option>
+      <option value="2027">2027</option>
+    </select>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-row">
+    <div class="sum-card blue">
+      <span class="sum-icon">📋</span>
+      <div class="sum-label">Total Reservations</div>
+      <div class="sum-val" id="sTotalRes">—</div>
+      <div class="sum-sub">All time</div>
+    </div>
+    <div class="sum-card green">
+      <span class="sum-icon">💰</span>
+      <div class="sum-label">Total Revenue (LKR)</div>
+      <div class="sum-val" id="sTotalRev">—</div>
+      <div class="sum-sub">Room + Service + VAT</div>
+    </div>
+    <div class="sum-card gold">
+      <span class="sum-icon">🛏️</span>
+      <div class="sum-label">Most Popular Room</div>
+      <div class="sum-val" id="sTopRoom">—</div>
+      <div class="sum-sub">By bookings</div>
+    </div>
+    <div class="sum-card red">
+      <span class="sum-icon">📅</span>
+      <div class="sum-label">Avg. Stay (Nights)</div>
+      <div class="sum-val" id="sAvgNights">—</div>
+      <div class="sum-sub">Per reservation</div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Monthly Revenue <span class="ctag">BAR CHART</span></div>
+      <div class="chart-wrap">
+        <canvas id="revenueChart" height="260"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Room Type Share <span class="ctag">PIE CHART</span></div>
+      <div class="chart-wrap">
+        <canvas id="roomChart" height="260"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="bottom-row">
+
+    <!-- OCCUPANCY -->
+    <div class="chart-card">
+      <div class="chart-title">Room Occupancy Rate <span class="ctag">LIVE</span></div>
+      <div id="occupancyBars"><div class="loading-row">Loading...</div></div>
+    </div>
+
+    <!-- REVENUE BY ROOM -->
+    <div class="chart-card">
+      <div class="chart-title">Revenue by Room Type <span class="ctag">LKR</span></div>
+      <div class="chart-wrap">
+        <canvas id="revRoomChart" height="220"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- AUDIT LOG -->
+  <div class="full-card">
+    <div class="tbl-header">
+      <div class="chart-title" style="margin:0;">Recent Audit Log <span class="ctag">TRIGGERS</span></div>
+      <span style="font-size:13px;color:#aaa;" id="auditCount"></span>
+    </div>
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>Action</th>
+        <th>Reservation ID</th>
+        <th>Guest Name</th>
+        <th>Room Type</th>
+        <th>Status</th>
+        <th>Changed At</th>
+      </tr>
+      </thead>
+      <tbody id="auditBody">
+      <tr><td colspan="6" class="loading-row">Loading audit log...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- REVENUE LOG -->
+  <div class="full-card">
+    <div class="tbl-header">
+      <div class="chart-title" style="margin:0;">Revenue Log <span class="ctag">CHECKED OUT</span></div>
+      <span style="font-size:13px;color:#aaa;" id="revLogCount"></span>
+    </div>
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>Reservation ID</th>
+        <th>Room Type</th>
+        <th>Nights</th>
+        <th>Room Charge</th>
+        <th>Service (10%)</th>
+        <th>VAT (8%)</th>
+        <th>Total (LKR)</th>
+        <th>Date</th>
+      </tr>
+      </thead>
+      <tbody id="revLogBody">
+      <tr><td colspan="8" class="loading-row">Loading revenue log...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  let revenueChart, roomChart, revRoomChart;
+
+  const COLORS = {
+      Standard:     '#1b6ca8',
+      Deluxe:       '#27ae60',
+      Suite:        '#c9a84c',
+      Presidential: '#e74c3c'
+  };
+
+  const RATES = { Standard: 8500, Deluxe: 12000, Suite: 18500, Presidential: 35000 };
+
+  window.onload = loadAll;
+
+  function loadAll() {
+      loadReservationData();
+      loadAuditLog();
+      loadRevenueLog();
+  }
+
+  function loadReservationData() {
+      fetch('/Ocean_Resort/ReservationServlet?action=getAll')
+          .then(r => r.json())
+          .then(data => {
+              const all = data.reservations || [];
+              const year = parseInt(document.getElementById('yearSelect').value);
+              buildSummary(all);
+              buildMonthlyChart(all, year);
+              buildRoomPieChart(all);
+              buildOccupancyBars(all);
+              buildRevByRoomChart(all);
+          })
+          .catch(() => {
+              document.getElementById('sTotalRes').textContent = '—';
+          });
+  }
+
+  function buildSummary(all) {
+      // Total reservations
+      document.getElementById('sTotalRes').textContent = all.length;
+
+      // Total revenue
+      let totalRev = 0, totalNights = 0;
+      all.forEach(r => {
+          if (r.checkIn && r.checkOut) {
+              const n = Math.max(1, Math.ceil((new Date(r.checkOut) - new Date(r.checkIn)) / 86400000));
+              const rate = RATES[r.roomType] || 0;
+              totalRev += n * rate * 1.18;
+              totalNights += n;
+          }
+      });
+      document.getElementById('sTotalRev').textContent = formatNum(Math.round(totalRev));
+
+      // Most popular room
+      const roomCount = {};
+      all.forEach(r => { roomCount[r.roomType] = (roomCount[r.roomType] || 0) + 1; });
+      const topRoom = Object.entries(roomCount).sort((a,b) => b[1]-a[1])[0];
+      document.getElementById('sTopRoom').textContent = topRoom ? topRoom[0] : '—';
+
+      // Avg nights
+      const avg = all.length ? Math.round(totalNights / all.length) : 0;
+      document.getElementById('sAvgNights').textContent = avg;
+  }
+
+  function buildMonthlyChart(all, year) {
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const revenue = new Array(12).fill(0);
+      const bookings = new Array(12).fill(0);
+
+      all.forEach(r => {
+          if (!r.checkIn) return;
+          const d = new Date(r.checkIn);
+          if (d.getFullYear() !== year) return;
+          const m = d.getMonth();
+          bookings[m]++;
+          if (r.checkOut) {
+              const n = Math.max(1, Math.ceil((new Date(r.checkOut) - d) / 86400000));
+              revenue[m] += n * (RATES[r.roomType] || 0) * 1.18;
+          }
+      });
+
+      if (revenueChart) revenueChart.destroy();
+      const ctx = document.getElementById('revenueChart').getContext('2d');
+      revenueChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: months,
+              datasets: [
+                  {
+                      label: 'Revenue (LKR)',
+                      data: revenue.map(v => Math.round(v)),
+                      backgroundColor: 'rgba(27,108,168,0.8)',
+                      borderRadius: 8,
+                      yAxisID: 'y'
+                  },
+                  {
+                      label: 'Bookings',
+                      data: bookings,
+                      type: 'line',
+                      borderColor: '#c9a84c',
+                      backgroundColor: 'rgba(201,168,76,0.1)',
+                      borderWidth: 2,
+                      pointBackgroundColor: '#c9a84c',
+                      pointRadius: 4,
+                      tension: 0.4,
+                      yAxisID: 'y1'
+                  }
+              ]
+          },
+          options: {
+              responsive: true,
+              plugins: { legend: { position: 'top' } },
+              scales: {
+                  y:  { position: 'left',  title: { display: true, text: 'Revenue (LKR)' }, beginAtZero: true },
+                  y1: { position: 'right', title: { display: true, text: 'Bookings' }, beginAtZero: true, grid: { drawOnChartArea: false } }
+              }
+          }
+      });
+  }
+
+  function buildRoomPieChart(all) {
+      const roomCount = {};
+      all.forEach(r => { roomCount[r.roomType] = (roomCount[r.roomType] || 0) + 1; });
+      const labels = Object.keys(roomCount);
+      const values = Object.values(roomCount);
+      const colors = labels.map(l => COLORS[l] || '#888');
+
+      if (roomChart) roomChart.destroy();
+      const ctx = document.getElementById('roomChart').getContext('2d');
+      roomChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+              labels,
+              datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: 'white' }]
+          },
+          options: {
+              responsive: true,
+              plugins: {
+                  legend: { position: 'bottom' },
+                  tooltip: {
+                      callbacks: {
+                          label: ctx => ` ${ctx.label}: ${ctx.raw} bookings (${Math.round(ctx.raw/all.length*100)}%)`
+                      }
+                  }
+              }
+          }
+      });
+  }
+
+  function buildOccupancyBars(all) {
+      const roomCount = {};
+      all.forEach(r => { roomCount[r.roomType] = (roomCount[r.roomType] || 0) + 1; });
+      const total = all.length || 1;
+      const sorted = Object.entries(roomCount).sort((a,b) => b[1]-a[1]);
+
+      const html = sorted.map(([type, count]) => {
+          const pct = Math.round(count / total * 100);
+          const color = COLORS[type] || '#888';
+          return `
+              <div class="occ-row">
+                  <div class="occ-label">${type}</div>
+                  <div class="occ-bar-wrap">
+                      <div class="occ-bar" style="width:${pct}%;background:${color};"></div>
+                  </div>
+                  <div class="occ-pct">${pct}%</div>
+              </div>`;
+      }).join('');
+
+      document.getElementById('occupancyBars').innerHTML = html || '<div class="empty-row">No data</div>';
+  }
+
+  function buildRevByRoomChart(all) {
+      const roomRev = {};
+      all.forEach(r => {
+          if (!r.checkIn || !r.checkOut) return;
+          const n = Math.max(1, Math.ceil((new Date(r.checkOut) - new Date(r.checkIn)) / 86400000));
+          const rev = n * (RATES[r.roomType] || 0) * 1.18;
+          roomRev[r.roomType] = (roomRev[r.roomType] || 0) + rev;
+      });
+
+      const labels = Object.keys(roomRev);
+      const values = Object.values(roomRev).map(v => Math.round(v));
+      const colors = labels.map(l => COLORS[l] || '#888');
+
+      if (revRoomChart) revRoomChart.destroy();
+      const ctx = document.getElementById('revRoomChart').getContext('2d');
+      revRoomChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels,
+              datasets: [{
+                  label: 'Revenue (LKR)',
+                  data: values,
+                  backgroundColor: colors,
+                  borderRadius: 8
+              }]
+          },
+          options: {
+              responsive: true,
+              indexAxis: 'y',
+              plugins: { legend: { display: false } },
+              scales: { x: { beginAtZero: true } }
+          }
+      });
+  }
+
+  function loadAuditLog() {
+      fetch('/Ocean_Resort/ReportsServlet?action=auditLog')
+          .then(r => r.json())
+          .then(data => {
+              const logs = data.logs || [];
+              document.getElementById('auditCount').textContent = logs.length + ' records';
+              if (logs.length === 0) {
+                  document.getElementById('auditBody').innerHTML = '<tr><td colspan="6" class="empty-row">No audit records yet. Add/delete a reservation to see logs.</td></tr>';
+                  return;
+              }
+              document.getElementById('auditBody').innerHTML = logs.map(l => `
+                  <tr>
+                      <td><span class="badge badge-${l.actionType.toLowerCase()}">${l.actionType}</span></td>
+                      <td style="font-weight:700;color:var(--mid);">${l.reservationId || '—'}</td>
+                      <td>${l.guestName || '—'}</td>
+                      <td>${l.roomType || '—'}</td>
+                      <td>${l.status || '—'}</td>
+                      <td style="color:#888;font-size:12px;">${formatDateTime(l.changedAt)}</td>
+                  </tr>`).join('');
+          })
+          .catch(() => {
+              document.getElementById('auditBody').innerHTML = '<tr><td colspan="6" class="empty-row">Add or update a reservation to populate the audit log.</td></tr>';
+          });
+  }
+
+  function loadRevenueLog() {
+      fetch('/Ocean_Resort/ReportsServlet?action=revenueLog')
+          .then(r => r.json())
+          .then(data => {
+              const logs = data.logs || [];
+              document.getElementById('revLogCount').textContent = logs.length + ' records';
+              if (logs.length === 0) {
+                  document.getElementById('revLogBody').innerHTML = '<tr><td colspan="8" class="empty-row">No revenue logs yet. Mark a reservation as "Checked Out" to see logs.</td></tr>';
+                  return;
+              }
+              document.getElementById('revLogBody').innerHTML = logs.map(l => `
+                  <tr>
+                      <td style="font-weight:700;color:var(--mid);">${l.reservationId}</td>
+                      <td>${l.roomType}</td>
+                      <td style="text-align:center;">${l.nights}</td>
+                      <td>${formatNum(l.roomCharge)}</td>
+                      <td>${formatNum(l.serviceCharge)}</td>
+                      <td>${formatNum(l.vatAmount)}</td>
+                      <td style="font-weight:700;color:var(--green);">LKR ${formatNum(l.totalAmount)}</td>
+                      <td style="color:#888;font-size:12px;">${formatDateTime(l.loggedAt)}</td>
+                  </tr>`).join('');
+          })
+          .catch(() => {
+              document.getElementById('revLogBody').innerHTML = '<tr><td colspan="8" class="empty-row">Mark a reservation as "Checked Out" to populate the revenue log.</td></tr>';
+          });
+  }
+
+  function formatNum(n) {
+      return Number(n).toLocaleString();
+  }
+
+  function formatDateTime(dt) {
+      if (!dt) return '—';
+      try { return new Date(dt).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
+      catch { return dt; }
+  }
+
+  function goToDashboard() {
+      fetch('/Ocean_Resort/DashboardServlet')
+          .then(r => r.json())
+          .then(data => {
+              window.location.href = data.role === 'ADMIN' ? 'admin-dashboard.html' : 'staff-dashboard.html';
+          })
+          .catch(() => { window.location.href = 'staff-dashboard.html'; });
+  }
+</script>
+</body>
+</html>
