@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean Resort - Select Your Room</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a1628 0%, #0a2540 40%, #0d3559 70%, #0a2540 100%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            padding: 0 28px;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 54px; flex-shrink: 0;
+            box-shadow: 0 3px 20px rgba(0,0,0,0.3);
+        }
+        .navbar-brand {
+            color: white; font-family: 'Playfair Display', serif;
+            font-size: 18px; font-weight: 700;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.15); color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 7px 18px; border-radius: 8px;
+            cursor: pointer; font-size: 12px; font-weight: 600;
+            text-decoration: none; transition: background 0.2s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .hero {
+            text-align: center;
+            padding: 18px 24px 14px;
+            flex-shrink: 0;
+        }
+        .hero-label {
+            display: inline-block;
+            background: rgba(27,108,168,0.3);
+            border: 1px solid rgba(27,108,168,0.5);
+            color: #7ec8e3; font-size: 10px; font-weight: 600;
+            letter-spacing: 2px; text-transform: uppercase;
+            padding: 4px 14px; border-radius: 20px; margin-bottom: 8px;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px; color: white; font-weight: 700;
+            line-height: 1.2; margin-bottom: 6px;
+        }
+        .hero h1 span { color: #7ec8e3; }
+        .hero p { color: rgba(255,255,255,0.6); font-size: 13px; }
+
+        /* grid — centred, fills remaining space */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            padding: 0 32px 24px;
+            flex: 1;
+            min-height: 0;
+            align-items: center;   /* ← vertically centres the row of cards */
+        }
+
+        /* card has a FIXED height so nothing stretches */
+        .room-card {
+            background: rgba(255,255,255,0.97);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+            border: 1.5px solid rgba(200,214,229,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; flex-direction: column;
+            height: 330px;          /* fixed height — no blank space */
+            animation: fadeUp 0.5s ease both;
+        }
+        .room-card:nth-child(1) { animation-delay: 0.05s; }
+        .room-card:nth-child(2) { animation-delay: 0.15s; }
+        .room-card:nth-child(3) { animation-delay: 0.25s; }
+        .room-card:nth-child(4) { animation-delay: 0.35s; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .room-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(0,0,0,0.4); }
+
+        /* image — fixed 160px */
+        .card-img-wrap {
+            position: relative; overflow: hidden;
+            height: 130px; flex-shrink: 0;
+        }
+        .card-img-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .room-card:hover .card-img-wrap img { transform: scale(1.06); }
+
+        .price-badge {
+            position: absolute; top: 10px; right: 10px;
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            color: white; font-weight: 700; font-size: 11px;
+            padding: 4px 10px; border-radius: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.35);
+        }
+        .price-badge span { font-size: 9px; font-weight: 400; opacity: 0.85; }
+
+        .type-badge {
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
+            color: white; font-size: 9px; font-weight: 600;
+            letter-spacing: 1px; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 5px;
+        }
+
+        /* body fills remaining card height, no overflow */
+        .card-body {
+            padding: 10px 13px 12px;
+            flex: 1; display: flex; flex-direction: column;
+            overflow: hidden;
+        }
+
+        .stars { color: #f5a623; font-size: 10px; margin-bottom: 3px; flex-shrink: 0; }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 14px; font-weight: 700;
+            color: #0f4c75; margin-bottom: 4px; flex-shrink: 0;
+        }
+
+        /* description — clamp to 3 lines, no flex:1 so no stretching */
+        .card-desc {
+            font-size: 10.5px; color: #777;
+            line-height: 1.45; margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .amenities {
+            display: flex; flex-wrap: wrap; gap: 3px;
+            margin-bottom: 8px; flex-shrink: 0;
+        }
+        .amenity {
+            background: #f0f6ff; border: 1px solid #cce0f5;
+            border-radius: 4px; font-size: 9px; font-weight: 600;
+            color: #1b6ca8; padding: 2px 5px;
+        }
+
+        .card-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            padding-top: 8px; flex-shrink: 0;
+            border-top: 1.5px solid #e8eef4;
+            margin-top: auto;       /* pushes footer to bottom of card */
+        }
+        .card-rate { font-size: 10px; color: #999; }
+        .card-rate strong { font-size: 13px; color: #0f4c75; font-weight: 700; }
+
+        .book-btn {
+            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+            color: white; border: none;
+            padding: 7px 14px; border-radius: 7px;
+            font-size: 11px; font-weight: 600;
+            cursor: pointer; font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            box-shadow: 0 3px 10px rgba(15,76,117,0.25);
+        }
+        .book-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(15,76,117,0.4); }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-brand">🌊 Ocean Resort</div>
+    <a class="back-btn" href="javascript:void(0)" onclick="goBack()">← Back to Dashboard</a>
+</nav>
+
+<div class="hero">
+    <div class="hero-label">🏨 Step 1 of 2 — Choose Your Room</div>
+    <h1>Select Your Perfect <span>Ocean Stay</span></h1>
+    <p>Click <strong>Book Now</strong> on any room to begin your reservation.</p>
+</div>
+
+<div class="rooms-grid">
+
+    <div class="room-card">
+        <div class="card-img-wrap">
+            <img src="images/standard-room.jpg" alt="Standard Room" onerror="this.style.background='linear-gradient(135deg,#1b6ca8,#0a2540)'" />
+            <div class="type-badge">Standard</div>
+            <div class="price-badge">LKR 8,500 <span>/ night</span></div>
+        </div>
+        <div class="card-body">
+            <div class="stars">★★★</div>
+            <div class="card-title">Standard Room</div>
+            <div class="card-desc">A comfortable and well-appointed room with modern amenities, perfect for solo travellers or short business stays near the ocean breeze.</div>
+            <div class="amenities">
+                <span class="amenity">🛏 Queen Bed</span>
+                <span class="amenity">📶 Free Wi-Fi</span>
+                <span class="amenity">❄️ AC</span>
+                <span class="amenity">📺 Smart TV</span>
+            </div>
+            <div class="card-footer">
+                <div class="card-rate">From <strong>LKR 8,500</strong> / night</div>
+                <button class="book-btn" onclick="bookRoom('Standard')">Book Now →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="room-card">
+        <div class="card-img-wrap">
+            <img src="images/deluxe-room.jpg" alt="Deluxe Room" onerror="this.style.background='linear-gradient(135deg,#27ae60,#0a2540)'" />
+            <div class="type-badge">Deluxe</div>
+            <div class="price-badge">LKR 12,000 <span>/ night</span></div>
+        </div>
+        <div class="card-body">
+            <div class="stars">★★★★</div>
+            <div class="card-title">Deluxe Room</div>
+            <div class="card-desc">Spacious and elegantly furnished, our Deluxe rooms offer a partial ocean view with premium bedding and a relaxing bathtub for a luxurious retreat.</div>
+            <div class="amenities">
+                <span class="amenity">🛏 King Bed</span>
+                <span class="amenity">🌊 Ocean View</span>
+                <span class="amenity">🛁 Bathtub</span>
+                <span class="amenity">🍽 Mini Bar</span>
+            </div>
+            <div class="card-footer">
+                <div class="card-rate">From <strong>LKR 12,000</strong> / night</div>
+                <button class="book-btn" onclick="bookRoom('Deluxe')">Book Now →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="room-card">
+        <div class="card-img-wrap">
+            <img src="images/suite-room.jpg" alt="Suite" onerror="this.style.background='linear-gradient(135deg,#c9a84c,#0a2540)'" />
+            <div class="type-badge">Suite</div>
+            <div class="price-badge">LKR 18,500 <span>/ night</span></div>
+        </div>
+        <div class="card-body">
+            <div class="stars">★★★★★</div>
+            <div class="card-title">Suite</div>
+            <div class="card-desc">Indulge in our luxurious Suite featuring a separate living area, panoramic ocean views, a private jacuzzi, and dedicated butler service.</div>
+            <div class="amenities">
+                <span class="amenity">🛏 Super King</span>
+                <span class="amenity">🌅 Panoramic View</span>
+                <span class="amenity">🛁 Jacuzzi</span>
+                <span class="amenity">🍾 Butler</span>
+            </div>
+            <div class="card-footer">
+                <div class="card-rate">From <strong>LKR 18,500</strong> / night</div>
+                <button class="book-btn" onclick="bookRoom('Suite')">Book Now →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="room-card">
+        <div class="card-img-wrap">
+            <img src="images/presidential-room.jpg" alt="Presidential Suite" onerror="this.style.background='linear-gradient(135deg,#e74c3c,#0a2540)'" />
+            <div class="type-badge">Presidential</div>
+            <div class="price-badge">LKR 35,000 <span>/ night</span></div>
+        </div>
+        <div class="card-body">
+            <div class="stars">★★★★★</div>
+            <div class="card-title">Presidential Suite</div>
+            <div class="card-desc">The pinnacle of luxury — a sprawling two-level suite with a private pool, full kitchen, home theatre, 24/7 concierge, and breathtaking 360° ocean vistas.</div>
+            <div class="amenities">
+                <span class="amenity">🏊 Private Pool</span>
+                <span class="amenity">🎬 Home Theatre</span>
+                <span class="amenity">🍳 Full Kitchen</span>
+                <span class="amenity">🚗 Chauffeur</span>
+            </div>
+            <div class="card-footer">
+                <div class="card-rate">From <strong>LKR 35,000</strong> / night</div>
+                <button class="book-btn" onclick="bookRoom('Presidential')">Book Now →</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function bookRoom(roomType) {
+        const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+        window.location.href = basePath + '/add-reservation.html?roomType=' + encodeURIComponent(roomType);
+    }
+    function goBack() {
+        const from = sessionStorage.getItem('cameFrom');
+        const path = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 2)) || '/Ocean_Resort';
+        window.location.href = path + (from === 'admin' ? '/admin-dashboard.html' : '/staff-dashboard.html');
+    }
+    if (document.referrer.includes('admin-dashboard')) sessionStorage.setItem('cameFrom', 'admin');
+    else if (document.referrer.includes('staff-dashboard')) sessionStorage.setItem('cameFrom', 'staff');
+</script>
+</body>
+</html>
