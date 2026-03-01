@@ -15,13 +15,17 @@
                 rgba(15, 76, 117, 0.78) 50%,
                 rgba(10, 21, 40, 0.85) 100%),
             url('images/welcome.jpg') center center / cover no-repeat fixed;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
     }
-
     .navbar {
         background: linear-gradient(135deg, #0f4c75, #1b6ca8);
         padding: 0 30px; display: flex; align-items: center;
         justify-content: space-between; height: 65px;
         box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+        flex-shrink: 0;
     }
     .navbar-brand { color: white; font-size: 18px; font-weight: 700; }
     .back-btn {
@@ -31,73 +35,66 @@
         text-decoration: none; transition: background 0.2s;
     }
     .back-btn:hover { background: rgba(255,255,255,0.25); }
-
     .page-wrapper {
-        display: flex;
-        justify-content: center;
-        padding: 40px 20px;
+        flex: 1; display: flex; flex-direction: column;
+        padding: 24px 30px 20px; overflow: hidden;
     }
-
-    .main-content {
-        width: 100%;
-        max-width: 900px;
+    .page-header { text-align: center; margin-bottom: 18px; flex-shrink: 0; }
+    .page-header h1 { font-size: 24px; color: #fff; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    .page-header p { color: rgba(255,255,255,0.85); font-size: 13px; margin-top: 5px; }
+    .tab-bar {
+        display: flex; gap: 6px; flex-shrink: 0;
+        margin-bottom: 16px; flex-wrap: nowrap; overflow-x: auto;
     }
-
-    .page-header {
-        margin-bottom: 30px;
-        text-align: center;
+    .tab-bar::-webkit-scrollbar { height: 3px; }
+    .tab-bar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
+    .tab-btn {
+        display: flex; align-items: center; gap: 8px;
+        padding: 10px 18px; border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.35);
+        background: rgba(10, 40, 80, 0.65);
+        color: rgba(255,255,255,0.95);
+        cursor: pointer; font-size: 13px; font-family: inherit;
+        font-weight: 500; white-space: nowrap;
+        transition: background 0.2s, color 0.2s; flex-shrink: 0;
     }
-    .page-header h1 { font-size: 26px; color: #ffffff; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-    .page-header p { color: rgba(255,255,255,0.85); font-size: 14px; margin-top: 6px; }
-
-    .cards-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
+    .tab-btn:hover { background: rgba(15, 60, 110, 0.85); color: #fff; }
+    .tab-btn.active {
+        background: rgba(255,255,255,0.97); color: #0f4c75;
+        border-color: transparent; font-weight: 700;
     }
-
-    .card-full { grid-column: 1 / -1; }
-
-    .help-card {
-        background: rgba(255,255,255,0.97);
-        border-radius: 16px;
-        padding: 28px 30px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-    }
-
-    .help-card .card-header {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 18px;
-        padding-bottom: 14px;
-        border-bottom: 2px solid #f0f0f0;
-    }
-
-    .card-header .icon {
-        width: 44px; height: 44px;
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
+    .tab-btn .t-icon {
+        width: 20px; height: 20px; border-radius: 6px;
         background: linear-gradient(135deg, #0f4c75, #1b6ca8);
-        flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .tab-btn .t-icon svg { width: 12px; height: 12px; fill: white; }
+    .panels-area { flex: 1; overflow: hidden; position: relative; }
+    .panel { display: none; height: 100%; overflow-y: auto; }
+    .panel::-webkit-scrollbar { width: 5px; }
+    .panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+    .panel.active { display: block; }
+    .help-card {
+        background: rgba(255,255,255,0.97); border-radius: 16px;
+        padding: 28px 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+    .help-card .card-header {
+        display: flex; align-items: center; gap: 14px;
+        margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid #f0f0f0;
+    }
+    .card-header .icon {
+        width: 44px; height: 44px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        background: linear-gradient(135deg, #0f4c75, #1b6ca8); flex-shrink: 0;
     }
     .card-header .icon svg { width: 22px; height: 22px; fill: white; }
     .card-header h3 { font-size: 16px; color: #1a1a2e; font-weight: 700; }
-
     .help-card p { font-size: 13.5px; color: #555; line-height: 1.8; margin-bottom: 12px; }
-    .help-card p:last-child { margin-bottom: 0; }
-
     .step-list { list-style: none; counter-reset: steps; }
     .step-list li {
-        counter-increment: steps;
-        display: flex;
-        gap: 12px;
-        padding: 10px 0;
-        border-bottom: 1px solid #f5f5f5;
-        font-size: 13px;
-        color: #555;
-        line-height: 1.6;
-        align-items: flex-start;
+        counter-increment: steps; display: flex; gap: 12px;
+        padding: 10px 0; border-bottom: 1px solid #f5f5f5;
+        font-size: 13px; color: #555; line-height: 1.6; align-items: flex-start;
     }
     .step-list li:last-child { border-bottom: none; }
     .step-list li::before {
@@ -108,62 +105,28 @@
         display: flex; align-items: center; justify-content: center;
         font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
     }
-
     .rate-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    .rate-table th {
-        padding: 10px 15px; background: #f8fbff;
-        text-align: left; font-size: 13px; color: #555;
-        border-bottom: 2px solid #eee;
-    }
-    .rate-table td {
-        padding: 11px 15px; font-size: 13px;
-        color: #444; border-bottom: 1px solid #f5f5f5;
-    }
+    .rate-table th { padding: 10px 15px; background: #f8fbff; text-align: left; font-size: 13px; color: #555; border-bottom: 2px solid #eee; }
+    .rate-table td { padding: 11px 15px; font-size: 13px; color: #444; border-bottom: 1px solid #f5f5f5; }
     .rate-table tr:last-child td { border-bottom: none; }
     .rate-table td:last-child { font-weight: 700; color: #0f4c75; }
-
     .tip-box {
-        background: #f0f9ff;
-        border-left: 4px solid #1b6ca8;
-        border-radius: 0 10px 10px 0;
-        padding: 12px 16px;
-        margin-top: 15px;
-        font-size: 13px;
-        color: #1a5276;
-        line-height: 1.7;
+        background: #f0f9ff; border-left: 4px solid #1b6ca8;
+        border-radius: 0 10px 10px 0; padding: 12px 16px;
+        margin-top: 15px; font-size: 13px; color: #1a5276; line-height: 1.7;
     }
     .tip-box strong { display: block; margin-bottom: 4px; }
-
-    /* Contact grid — 4 columns for full-width card */
-    .contact-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        gap: 14px;
+    .section-divider {
+        font-size: 13px; font-weight: 700; color: #0f4c75;
+        margin: 18px 0 10px; padding-bottom: 6px;
+        border-bottom: 1.5px solid #d6e8f7;
     }
-    .contact-item {
-        background: #f8fbff;
-        border-radius: 10px;
-        padding: 16px 18px;
-    }
-    .contact-item .c-label {
-        font-size: 11px; color: #999;
-        margin-bottom: 6px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .contact-item .c-value {
-        font-size: 14px; color: #0f4c75; font-weight: 700;
-    }
-
-    @media (max-width: 680px) {
-        .cards-grid { grid-template-columns: 1fr; }
-        .card-full { grid-column: auto; }
-        .contact-grid { grid-template-columns: 1fr 1fr; }
-    }
-
-    @media (max-width: 420px) {
-        .contact-grid { grid-template-columns: 1fr; }
-    }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+    .contact-item { background: #f8fbff; border-radius: 10px; padding: 16px 18px; }
+    .contact-item .c-label { font-size: 11px; color: #999; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .contact-item .c-value { font-size: 14px; color: #0f4c75; font-weight: 700; }
+    @media (max-width: 680px) { .contact-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 420px) { .contact-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -174,17 +137,44 @@
 </nav>
 
 <div class="page-wrapper">
-  <div class="main-content">
 
-    <div class="page-header">
-      <h1>Help & Guidelines</h1>
-      <p>Instructions for operating the Ocean View Resort Reservation System.</p>
-    </div>
+  <div class="page-header">
+    <h1>Help &amp; Guidelines</h1>
+    <p>Instructions for operating the Ocean View Resort Reservation System.</p>
+  </div>
 
-    <div class="cards-grid">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('getting-started', this)">
+      <span class="t-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></span>
+      Getting Started
+    </button>
+    <button class="tab-btn" onclick="showTab('add-reservation', this)">
+      <span class="t-icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></span>
+      Add Reservation
+    </button>
+    <button class="tab-btn" onclick="showTab('view-search', this)">
+      <span class="t-icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></span>
+      View &amp; Search Reservations
+    </button>
+    <button class="tab-btn" onclick="showTab('billing', this)">
+      <span class="t-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></span>
+      Billing &amp; Printing
+    </button>
+    <button class="tab-btn" onclick="showTab('room-rates', this)">
+      <span class="t-icon"><svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg></span>
+      Room Types &amp; Rates
+    </button>
+    <button class="tab-btn" onclick="showTab('support', this)">
+      <span class="t-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></span>
+      Support &amp; Contact
+    </button>
+  </div>
 
-      <!-- ROW 1: Getting Started — Full Width -->
-      <div class="help-card card-full">
+  <div class="panels-area">
+
+    <!-- Getting Started -->
+    <div class="panel active" id="getting-started">
+      <div class="help-card">
         <div class="card-header">
           <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div>
           <h3>Getting Started</h3>
@@ -196,8 +186,10 @@
           Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>admin123</strong>
         </div>
       </div>
+    </div>
 
-      <!-- ROW 2: Add Reservation | Search Reservation -->
+    <!-- Add Reservation -->
+    <div class="panel" id="add-reservation">
       <div class="help-card">
         <div class="card-header">
           <div class="icon"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
@@ -206,36 +198,60 @@
         <ul class="step-list">
           <li>Click "Add New Reservation" from the Dashboard.</li>
           <li>The system will automatically generate a unique Reservation ID.</li>
-          <li>Fill in guest details: Full Name, Address, Contact Number.</li>
+          <li>Fill in guest details: Full Name, Address, Contact Number, and Email (required).</li>
           <li>Select the Room Type and enter the Room Number.</li>
           <li>Choose Check-in and Check-out dates. Cost is auto-calculated.</li>
           <li>Add any special requests from the guest if needed.</li>
           <li>Click "Save Reservation" and note the Reservation ID for the guest.</li>
         </ul>
       </div>
+    </div>
 
+    <!-- View & Search Reservations -->
+    <div class="panel" id="view-search">
       <div class="help-card">
         <div class="card-header">
-          <div class="icon"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
-          <h3>How to Search a Reservation</h3>
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg></div>
+          <h3>How to View &amp; Search Reservations</h3>
         </div>
+        <p class="section-divider">📋 Viewing All Reservations</p>
         <ul class="step-list">
-          <li>Click "Search Reservation" from the Dashboard.</li>
-          <li>Select search type: Reservation ID, Guest Name, or Contact Number.</li>
-          <li>Enter the search value and press Enter or click Search.</li>
-          <li>The full reservation details will be displayed if found.</li>
-          <li>From the result, click "Generate Bill" to create an invoice directly.</li>
+          <li>Click "View &amp; Search Reservations" from the Dashboard.</li>
+          <li>All reservations are listed in a table with ID, Guest Name, Contact, Room Type, Room No., Check-in, Check-out, and Status.</li>
+          <li>Use the <strong>Room Type</strong> filter dropdown to show only a specific room category (Standard, Deluxe, Suite, Presidential).</li>
+          <li>Use the <strong>Status</strong> filter dropdown to show only Active, Checked Out, or Pending reservations.</li>
+          <li>Results are paginated — use the page buttons at the bottom to navigate through records.</li>
+          <li>Click the <strong>View</strong> button on any row to open the full reservation details.</li>
+          <li>Click the <strong>Bill</strong> button on any row to go directly to the billing page for that reservation.</li>
+          <li>Click the <strong>Delete</strong> button to permanently remove a reservation (a confirmation prompt will appear).</li>
+        </ul>
+        <div class="tip-box" style="margin-top:14px;margin-bottom:16px;">
+          <strong>📌 Status Colours</strong>
+          <span style="background:#d4edda;color:#1a7a4a;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;">Active</span> — Guest is currently checked in &nbsp;|&nbsp;
+          <span style="background:#f0f0f0;color:#777;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;">Checked Out</span> — Stay completed &nbsp;|&nbsp;
+          <span style="background:#fff3cd;color:#856404;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;">Pending</span> — Upcoming arrival
+        </div>
+        <p class="section-divider">🔍 Searching a Specific Reservation</p>
+        <ul class="step-list">
+          <li>Use the <strong>search bar</strong> at the top of the reservations table to find a record instantly.</li>
+          <li>Search by <strong>Guest Name</strong> — type part of the name and results filter in real time.</li>
+          <li>Search by <strong>Reservation ID</strong> — e.g. type RES-001 to find an exact booking.</li>
+          <li>Search by <strong>Contact Number</strong> — enter the guest phone number to locate their booking.</li>
+          <li>Once the result appears, click <strong>View</strong> to see full details including address, NIC, booking summary, and special requests.</li>
+          <li>From the detail view, click <strong>Generate Bill</strong> to proceed to billing for that reservation.</li>
         </ul>
       </div>
+    </div>
 
-      <!-- ROW 3: Billing | Room Rates -->
+    <!-- Billing -->
+    <div class="panel" id="billing">
       <div class="help-card">
         <div class="card-header">
           <div class="icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div>
-          <h3>How to Generate & Print a Bill</h3>
+          <h3>How to Generate &amp; Print a Bill</h3>
         </div>
         <ul class="step-list">
-          <li>Click "Calculate & Print Bill" from the Dashboard.</li>
+          <li>Click "Calculate &amp; Print Bill" from the Dashboard.</li>
           <li>Enter the Reservation ID and click "Generate Bill".</li>
           <li>System calculates room charges, 10% service charge, and 8% VAT.</li>
           <li>Click "Print Bill" to print using the browser print dialog.</li>
@@ -246,20 +262,17 @@
           Room Charge + 10% Service Charge + 8% VAT = Total Due
         </div>
       </div>
+    </div>
 
-      <!-- Room Rates — right column (half width) -->
+    <!-- Room Rates -->
+    <div class="panel" id="room-rates">
       <div class="help-card">
         <div class="card-header">
           <div class="icon"><svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg></div>
-          <h3>Room Types & Rates</h3>
+          <h3>Room Types &amp; Rates</h3>
         </div>
         <table class="rate-table">
-          <thead>
-          <tr>
-            <th>Room Type</th>
-            <th>Rate / Night (LKR)</th>
-          </tr>
-          </thead>
+          <thead><tr><th>Room Type</th><th>Rate / Night (LKR)</th></tr></thead>
           <tbody>
           <tr><td>Standard Room</td><td>8,500</td></tr>
           <tr><td>Deluxe Room</td><td>12,000</td></tr>
@@ -273,12 +286,14 @@
           Suite: Full sea view &nbsp;|&nbsp; Presidential: Panoramic ocean view
         </div>
       </div>
+    </div>
 
-      <!-- ROW 4: Support & Contact — Full Width at bottom -->
-      <div class="help-card card-full">
+    <!-- Support -->
+    <div class="panel" id="support">
+      <div class="help-card">
         <div class="card-header">
           <div class="icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
-          <h3>Support & Contact</h3>
+          <h3>Support &amp; Contact</h3>
         </div>
         <div class="contact-grid">
           <div class="contact-item">
@@ -291,7 +306,7 @@
           </div>
           <div class="contact-item">
             <div class="c-label">Reservations Email</div>
-            <div class="c-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f587908690878394819c9a9b86b59a9690949b8790869a8781db999e">[email&#160;protected]</a></div>
+            <div class="c-value">info@oceanviewresort.lk</div>
           </div>
           <div class="contact-item">
             <div class="c-label">Location</div>
@@ -299,26 +314,32 @@
           </div>
         </div>
       </div>
-
     </div>
+
   </div>
 </div>
 
 <script>
+  function showTab(id, btn) {
+    var panels = document.querySelectorAll('.panel');
+    var btns = document.querySelectorAll('.tab-btn');
+    for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
+    for (var j = 0; j < btns.length; j++) btns[j].classList.remove('active');
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
   function goToDashboard() {
-      fetch('/Ocean_Resort/DashboardServlet')
-          .then(r => r.json())
-          .then(data => {
-              if (data.role === 'ADMIN') {
-                  window.location.href = 'admin-dashboard.html';
-              } else {
-                  window.location.href = 'staff-dashboard.html';
-              }
-          })
-          .catch(() => {
-              window.location.href = 'staff-dashboard.html';
-          });
+    fetch('/Ocean_Resort/DashboardServlet')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        window.location.href = (data.role === 'ADMIN') ? 'admin-dashboard.html' : 'staff-dashboard.html';
+      })
+      .catch(function() {
+        window.location.href = 'staff-dashboard.html';
+      });
   }
 </script>
+
 </body>
 </html>

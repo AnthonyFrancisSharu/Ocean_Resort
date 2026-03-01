@@ -22,113 +22,112 @@
     /* NAVBAR */
     .navbar {
         background: linear-gradient(135deg, var(--deep), var(--mid));
-        padding: 0 30px; display: flex; align-items: center;
-        justify-content: space-between; height: 65px;
+        padding: 0 24px; display: flex; align-items: center;
+        justify-content: space-between; height: 54px;
         box-shadow: 0 3px 15px rgba(0,0,0,0.2);
         position: sticky; top: 0; z-index: 100;
     }
-    .navbar-brand { color: white; font-family: 'Playfair Display', serif; font-size: 20px; }
-    .navbar-brand span { font-family: 'DM Sans', sans-serif; font-size: 11px; opacity: 0.6; display: block; letter-spacing: 3px; }
+    .navbar-brand { color: white; font-family: 'Playfair Display', serif; font-size: 17px; display: flex; align-items: center; gap: 10px; }
+    .navbar-brand span { font-family: 'DM Sans', sans-serif; font-size: 10px; opacity: 0.6; letter-spacing: 3px; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; }
     .back-btn {
         background: rgba(255,255,255,0.12); color: white;
-        border: 1px solid rgba(255,255,255,0.25); padding: 9px 20px;
-        border-radius: 8px; cursor: pointer; font-size: 13px;
+        border: 1px solid rgba(255,255,255,0.25); padding: 7px 16px;
+        border-radius: 7px; cursor: pointer; font-size: 12px;
         text-decoration: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
     }
     .back-btn:hover { background: rgba(255,255,255,0.22); }
 
     /* PAGE */
-    .page { padding: 35px 40px; }
+    .page { padding: 20px 26px; }
 
-    .page-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-    .page-header h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--deep); }
-    .page-header p { font-size: 14px; color: #888; margin-top: 4px; }
+    .page-header { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--deep); }
+    .page-header p { font-size: 12px; color: #888; margin-top: 2px; }
     .year-select {
-        padding: 10px 16px; border: 2px solid #e0e0e0; border-radius: 10px;
-        font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none;
+        padding: 7px 12px; border: 1.5px solid #d0d0d0; border-radius: 8px;
+        font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none;
         background: white; cursor: pointer; color: var(--deep);
     }
     .year-select:focus { border-color: var(--light); }
 
     /* SUMMARY CARDS */
-    .summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+    .summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
     .sum-card {
-        background: white; border-radius: 16px; padding: 22px 24px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        display: flex; flex-direction: column; gap: 6px;
+        background: white; border-radius: 12px; padding: 16px 18px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        display: flex; flex-direction: column; gap: 4px;
         position: relative; overflow: hidden;
-        border-top: 4px solid transparent;
+        border-top: 3px solid transparent;
         transition: transform 0.2s;
     }
-    .sum-card:hover { transform: translateY(-3px); }
+    .sum-card:hover { transform: translateY(-2px); }
     .sum-card.blue  { border-top-color: var(--light); }
     .sum-card.green { border-top-color: var(--green); }
     .sum-card.gold  { border-top-color: var(--gold); }
     .sum-card.red   { border-top-color: var(--red); }
-    .sum-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 1.5px; }
-    .sum-val   { font-size: 28px; font-weight: 700; color: var(--deep); line-height: 1; }
-    .sum-sub   { font-size: 12px; color: #aaa; }
-    .sum-icon  { position: absolute; top: 16px; right: 18px; font-size: 28px; opacity: 0.15; }
+    .sum-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 1.5px; }
+    .sum-val   { font-size: 24px; font-weight: 700; color: var(--deep); line-height: 1; }
+    .sum-sub   { font-size: 11px; color: #aaa; }
+    .sum-icon  { position: absolute; top: 13px; right: 14px; font-size: 22px; opacity: 0.13; }
 
     /* CHARTS ROW */
-    .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 22px; margin-bottom: 22px; }
+    .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 14px; }
     .chart-card {
-        background: white; border-radius: 16px; padding: 24px 26px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        background: white; border-radius: 12px; padding: 16px 18px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .chart-title {
-        font-size: 15px; font-weight: 700; color: var(--deep);
-        margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        font-size: 13px; font-weight: 700; color: var(--deep);
+        margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
     }
-    .chart-title .ctag {
-        font-size: 11px; font-weight: 600; padding: 3px 10px;
+    .ctag {
+        font-size: 10px; font-weight: 600; padding: 2px 8px;
         border-radius: 20px; letter-spacing: 1px;
         background: rgba(27,108,168,0.1); color: var(--light);
         border: 1px solid rgba(27,108,168,0.2);
     }
-    .chart-wrap { position: relative; }
 
     /* BOTTOM ROW */
-    .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 22px; }
+    .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 
     /* TABLE */
     .data-table { width: 100%; border-collapse: collapse; }
     .data-table th {
-        text-align: left; font-size: 11px; font-weight: 600;
+        text-align: left; font-size: 10px; font-weight: 600;
         color: #999; letter-spacing: 1px; text-transform: uppercase;
-        padding: 0 0 12px; border-bottom: 2px solid #f0f0f0;
+        padding: 0 0 10px; border-bottom: 2px solid #eee;
     }
     .data-table td {
-        padding: 12px 0; font-size: 13px; color: #444;
-        border-bottom: 1px solid #f8f8f8; vertical-align: middle;
+        padding: 10px 0; font-size: 12px; color: #444;
+        border-bottom: 1px solid #f5f5f5; vertical-align: middle;
     }
     .data-table tr:last-child td { border-bottom: none; }
 
-    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; }
     .badge-insert { background: #e8f8ef; color: #1a7a4a; }
     .badge-update { background: #e8f0fb; color: var(--light); }
     .badge-delete { background: #fef0f0; color: var(--red); }
 
-    /* OCCUPANCY TABLE */
-    .occ-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+    /* OCCUPANCY */
+    .occ-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f5f5f5; }
     .occ-row:last-child { border-bottom: none; }
-    .occ-label { font-size: 13px; color: #444; width: 120px; flex-shrink: 0; }
-    .occ-bar-wrap { flex: 1; background: #f0f4f8; border-radius: 20px; height: 10px; overflow: hidden; }
+    .occ-label { font-size: 12px; color: #444; width: 110px; flex-shrink: 0; }
+    .occ-bar-wrap { flex: 1; background: #f0f4f8; border-radius: 20px; height: 8px; overflow: hidden; }
     .occ-bar { height: 100%; border-radius: 20px; transition: width 1s ease; }
-    .occ-pct { font-size: 13px; font-weight: 700; color: var(--deep); width: 45px; text-align: right; }
+    .occ-pct { font-size: 12px; font-weight: 700; color: var(--deep); width: 38px; text-align: right; }
 
     /* FULL WIDTH CARD */
     .full-card {
-        background: white; border-radius: 16px; padding: 24px 26px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 22px;
+        background: white; border-radius: 12px; padding: 16px 18px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 14px;
     }
-    .full-card .tbl-header {
+    .tbl-header {
         display: flex; justify-content: space-between; align-items: center;
-        margin-bottom: 18px;
+        margin-bottom: 12px;
     }
 
-    .loading-row { text-align: center; padding: 30px; color: #bbb; font-size: 14px; }
-    .empty-row   { text-align: center; padding: 30px; color: #ccc; font-size: 13px; }
+    .loading-row { text-align: center; padding: 20px; color: #bbb; font-size: 13px; }
+    .empty-row   { text-align: center; padding: 20px; color: #ccc; font-size: 12px; }
   </style>
 </head>
 <body>
@@ -188,53 +187,35 @@
   <div class="charts-row">
     <div class="chart-card">
       <div class="chart-title">Monthly Revenue <span class="ctag">BAR CHART</span></div>
-      <div class="chart-wrap">
-        <canvas id="revenueChart" height="260"></canvas>
-      </div>
+      <canvas id="revenueChart" height="200"></canvas>
     </div>
     <div class="chart-card">
       <div class="chart-title">Room Type Share <span class="ctag">PIE CHART</span></div>
-      <div class="chart-wrap">
-        <canvas id="roomChart" height="260"></canvas>
-      </div>
+      <canvas id="roomChart" height="200"></canvas>
     </div>
   </div>
 
   <!-- BOTTOM ROW -->
   <div class="bottom-row">
-
-    <!-- OCCUPANCY -->
     <div class="chart-card">
       <div class="chart-title">Room Occupancy Rate <span class="ctag">LIVE</span></div>
       <div id="occupancyBars"><div class="loading-row">Loading...</div></div>
     </div>
-
-    <!-- REVENUE BY ROOM -->
     <div class="chart-card">
       <div class="chart-title">Revenue by Room Type <span class="ctag">LKR</span></div>
-      <div class="chart-wrap">
-        <canvas id="revRoomChart" height="220"></canvas>
-      </div>
+      <canvas id="revRoomChart" height="180"></canvas>
     </div>
-
   </div>
 
   <!-- AUDIT LOG -->
   <div class="full-card">
     <div class="tbl-header">
       <div class="chart-title" style="margin:0;">Recent Audit Log <span class="ctag">TRIGGERS</span></div>
-      <span style="font-size:13px;color:#aaa;" id="auditCount"></span>
+      <span style="font-size:11px;color:#aaa;" id="auditCount"></span>
     </div>
     <table class="data-table">
       <thead>
-      <tr>
-        <th>Action</th>
-        <th>Reservation ID</th>
-        <th>Guest Name</th>
-        <th>Room Type</th>
-        <th>Status</th>
-        <th>Changed At</th>
-      </tr>
+      <tr><th>Action</th><th>Reservation ID</th><th>Guest Name</th><th>Room Type</th><th>Status</th><th>Changed At</th></tr>
       </thead>
       <tbody id="auditBody">
       <tr><td colspan="6" class="loading-row">Loading audit log...</td></tr>
@@ -246,20 +227,11 @@
   <div class="full-card">
     <div class="tbl-header">
       <div class="chart-title" style="margin:0;">Revenue Log <span class="ctag">CHECKED OUT</span></div>
-      <span style="font-size:13px;color:#aaa;" id="revLogCount"></span>
+      <span style="font-size:11px;color:#aaa;" id="revLogCount"></span>
     </div>
     <table class="data-table">
       <thead>
-      <tr>
-        <th>Reservation ID</th>
-        <th>Room Type</th>
-        <th>Nights</th>
-        <th>Room Charge</th>
-        <th>Service (10%)</th>
-        <th>VAT (8%)</th>
-        <th>Total (LKR)</th>
-        <th>Date</th>
-      </tr>
+      <tr><th>Reservation ID</th><th>Room Type</th><th>Nights</th><th>Room Charge</th><th>Service (10%)</th><th>VAT (8%)</th><th>Total (LKR)</th><th>Date</th></tr>
       </thead>
       <tbody id="revLogBody">
       <tr><td colspan="8" class="loading-row">Loading revenue log...</td></tr>
@@ -272,14 +244,8 @@
 <script>
   let revenueChart, roomChart, revRoomChart;
 
-  const COLORS = {
-      Standard:     '#1b6ca8',
-      Deluxe:       '#27ae60',
-      Suite:        '#c9a84c',
-      Presidential: '#e74c3c'
-  };
-
-  const RATES = { Standard: 8500, Deluxe: 12000, Suite: 18500, Presidential: 35000 };
+  const COLORS = { Standard:'#1b6ca8', Deluxe:'#27ae60', Suite:'#c9a84c', Presidential:'#e74c3c' };
+  const RATES  = { Standard:8500, Deluxe:12000, Suite:18500, Presidential:35000 };
 
   window.onload = loadAll;
 
@@ -293,7 +259,7 @@
       fetch('/Ocean_Resort/ReservationServlet?action=getAll')
           .then(r => r.json())
           .then(data => {
-              const all = data.reservations || [];
+              const all  = data.reservations || [];
               const year = parseInt(document.getElementById('yearSelect').value);
               buildSummary(all);
               buildMonthlyChart(all, year);
@@ -301,43 +267,31 @@
               buildOccupancyBars(all);
               buildRevByRoomChart(all);
           })
-          .catch(() => {
-              document.getElementById('sTotalRes').textContent = '—';
-          });
+          .catch(() => { document.getElementById('sTotalRes').textContent = '—'; });
   }
 
   function buildSummary(all) {
-      // Total reservations
       document.getElementById('sTotalRes').textContent = all.length;
-
-      // Total revenue
       let totalRev = 0, totalNights = 0;
       all.forEach(r => {
           if (r.checkIn && r.checkOut) {
               const n = Math.max(1, Math.ceil((new Date(r.checkOut) - new Date(r.checkIn)) / 86400000));
-              const rate = RATES[r.roomType] || 0;
-              totalRev += n * rate * 1.18;
+              totalRev += n * (RATES[r.roomType] || 0) * 1.18;
               totalNights += n;
           }
       });
       document.getElementById('sTotalRev').textContent = formatNum(Math.round(totalRev));
-
-      // Most popular room
       const roomCount = {};
       all.forEach(r => { roomCount[r.roomType] = (roomCount[r.roomType] || 0) + 1; });
       const topRoom = Object.entries(roomCount).sort((a,b) => b[1]-a[1])[0];
-      document.getElementById('sTopRoom').textContent = topRoom ? topRoom[0] : '—';
-
-      // Avg nights
-      const avg = all.length ? Math.round(totalNights / all.length) : 0;
-      document.getElementById('sAvgNights').textContent = avg;
+      document.getElementById('sTopRoom').textContent   = topRoom ? topRoom[0] : '—';
+      document.getElementById('sAvgNights').textContent = all.length ? Math.round(totalNights / all.length) : 0;
   }
 
   function buildMonthlyChart(all, year) {
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const revenue = new Array(12).fill(0);
+      const months   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const revenue  = new Array(12).fill(0);
       const bookings = new Array(12).fill(0);
-
       all.forEach(r => {
           if (!r.checkIn) return;
           const d = new Date(r.checkIn);
@@ -349,41 +303,22 @@
               revenue[m] += n * (RATES[r.roomType] || 0) * 1.18;
           }
       });
-
       if (revenueChart) revenueChart.destroy();
-      const ctx = document.getElementById('revenueChart').getContext('2d');
-      revenueChart = new Chart(ctx, {
+      revenueChart = new Chart(document.getElementById('revenueChart').getContext('2d'), {
           type: 'bar',
           data: {
               labels: months,
               datasets: [
-                  {
-                      label: 'Revenue (LKR)',
-                      data: revenue.map(v => Math.round(v)),
-                      backgroundColor: 'rgba(27,108,168,0.8)',
-                      borderRadius: 8,
-                      yAxisID: 'y'
-                  },
-                  {
-                      label: 'Bookings',
-                      data: bookings,
-                      type: 'line',
-                      borderColor: '#c9a84c',
-                      backgroundColor: 'rgba(201,168,76,0.1)',
-                      borderWidth: 2,
-                      pointBackgroundColor: '#c9a84c',
-                      pointRadius: 4,
-                      tension: 0.4,
-                      yAxisID: 'y1'
-                  }
+                  { label:'Revenue (LKR)', data:revenue.map(v=>Math.round(v)), backgroundColor:'rgba(27,108,168,0.8)', borderRadius:6, yAxisID:'y' },
+                  { label:'Bookings', data:bookings, type:'line', borderColor:'#c9a84c', backgroundColor:'rgba(201,168,76,0.1)', borderWidth:2, pointBackgroundColor:'#c9a84c', pointRadius:3, tension:0.4, yAxisID:'y1' }
               ]
           },
           options: {
               responsive: true,
-              plugins: { legend: { position: 'top' } },
+              plugins: { legend: { position:'top', labels:{ font:{ size:11 }, boxWidth:12 } } },
               scales: {
-                  y:  { position: 'left',  title: { display: true, text: 'Revenue (LKR)' }, beginAtZero: true },
-                  y1: { position: 'right', title: { display: true, text: 'Bookings' }, beginAtZero: true, grid: { drawOnChartArea: false } }
+                  y:  { position:'left',  title:{ display:true, text:'Revenue (LKR)', font:{size:10} }, beginAtZero:true, ticks:{ font:{size:10} } },
+                  y1: { position:'right', title:{ display:true, text:'Bookings', font:{size:10} }, beginAtZero:true, grid:{ drawOnChartArea:false }, ticks:{ font:{size:10} } }
               }
           }
       });
@@ -395,24 +330,15 @@
       const labels = Object.keys(roomCount);
       const values = Object.values(roomCount);
       const colors = labels.map(l => COLORS[l] || '#888');
-
       if (roomChart) roomChart.destroy();
-      const ctx = document.getElementById('roomChart').getContext('2d');
-      roomChart = new Chart(ctx, {
+      roomChart = new Chart(document.getElementById('roomChart').getContext('2d'), {
           type: 'doughnut',
-          data: {
-              labels,
-              datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: 'white' }]
-          },
+          data: { labels, datasets:[{ data:values, backgroundColor:colors, borderWidth:2, borderColor:'white' }] },
           options: {
               responsive: true,
               plugins: {
-                  legend: { position: 'bottom' },
-                  tooltip: {
-                      callbacks: {
-                          label: ctx => ` ${ctx.label}: ${ctx.raw} bookings (${Math.round(ctx.raw/all.length*100)}%)`
-                      }
-                  }
+                  legend: { position:'bottom', labels:{ font:{size:11}, boxWidth:12 } },
+                  tooltip: { callbacks:{ label: ctx => ` ${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/all.length*100)}%)` } }
               }
           }
       });
@@ -421,22 +347,17 @@
   function buildOccupancyBars(all) {
       const roomCount = {};
       all.forEach(r => { roomCount[r.roomType] = (roomCount[r.roomType] || 0) + 1; });
-      const total = all.length || 1;
+      const total  = all.length || 1;
       const sorted = Object.entries(roomCount).sort((a,b) => b[1]-a[1]);
-
       const html = sorted.map(([type, count]) => {
-          const pct = Math.round(count / total * 100);
+          const pct   = Math.round(count / total * 100);
           const color = COLORS[type] || '#888';
-          return `
-              <div class="occ-row">
-                  <div class="occ-label">${type}</div>
-                  <div class="occ-bar-wrap">
-                      <div class="occ-bar" style="width:${pct}%;background:${color};"></div>
-                  </div>
-                  <div class="occ-pct">${pct}%</div>
-              </div>`;
+          return `<div class="occ-row">
+              <div class="occ-label">${type}</div>
+              <div class="occ-bar-wrap"><div class="occ-bar" style="width:${pct}%;background:${color};"></div></div>
+              <div class="occ-pct">${pct}%</div>
+          </div>`;
       }).join('');
-
       document.getElementById('occupancyBars').innerHTML = html || '<div class="empty-row">No data</div>';
   }
 
@@ -444,33 +365,21 @@
       const roomRev = {};
       all.forEach(r => {
           if (!r.checkIn || !r.checkOut) return;
-          const n = Math.max(1, Math.ceil((new Date(r.checkOut) - new Date(r.checkIn)) / 86400000));
+          const n   = Math.max(1, Math.ceil((new Date(r.checkOut) - new Date(r.checkIn)) / 86400000));
           const rev = n * (RATES[r.roomType] || 0) * 1.18;
           roomRev[r.roomType] = (roomRev[r.roomType] || 0) + rev;
       });
-
       const labels = Object.keys(roomRev);
       const values = Object.values(roomRev).map(v => Math.round(v));
       const colors = labels.map(l => COLORS[l] || '#888');
-
       if (revRoomChart) revRoomChart.destroy();
-      const ctx = document.getElementById('revRoomChart').getContext('2d');
-      revRoomChart = new Chart(ctx, {
+      revRoomChart = new Chart(document.getElementById('revRoomChart').getContext('2d'), {
           type: 'bar',
-          data: {
-              labels,
-              datasets: [{
-                  label: 'Revenue (LKR)',
-                  data: values,
-                  backgroundColor: colors,
-                  borderRadius: 8
-              }]
-          },
+          data: { labels, datasets:[{ label:'Revenue (LKR)', data:values, backgroundColor:colors, borderRadius:6 }] },
           options: {
-              responsive: true,
-              indexAxis: 'y',
-              plugins: { legend: { display: false } },
-              scales: { x: { beginAtZero: true } }
+              responsive: true, indexAxis:'y',
+              plugins: { legend:{ display:false } },
+              scales: { x:{ beginAtZero:true, ticks:{ font:{size:10} } }, y:{ ticks:{ font:{size:11} } } }
           }
       });
   }
@@ -481,8 +390,8 @@
           .then(data => {
               const logs = data.logs || [];
               document.getElementById('auditCount').textContent = logs.length + ' records';
-              if (logs.length === 0) {
-                  document.getElementById('auditBody').innerHTML = '<tr><td colspan="6" class="empty-row">No audit records yet. Add/delete a reservation to see logs.</td></tr>';
+              if (!logs.length) {
+                  document.getElementById('auditBody').innerHTML = '<tr><td colspan="6" class="empty-row">No audit records yet.</td></tr>';
                   return;
               }
               document.getElementById('auditBody').innerHTML = logs.map(l => `
@@ -492,7 +401,7 @@
                       <td>${l.guestName || '—'}</td>
                       <td>${l.roomType || '—'}</td>
                       <td>${l.status || '—'}</td>
-                      <td style="color:#888;font-size:12px;">${formatDateTime(l.changedAt)}</td>
+                      <td style="color:#888;font-size:11px;">${formatDateTime(l.changedAt)}</td>
                   </tr>`).join('');
           })
           .catch(() => {
@@ -506,8 +415,8 @@
           .then(data => {
               const logs = data.logs || [];
               document.getElementById('revLogCount').textContent = logs.length + ' records';
-              if (logs.length === 0) {
-                  document.getElementById('revLogBody').innerHTML = '<tr><td colspan="8" class="empty-row">No revenue logs yet. Mark a reservation as "Checked Out" to see logs.</td></tr>';
+              if (!logs.length) {
+                  document.getElementById('revLogBody').innerHTML = '<tr><td colspan="8" class="empty-row">No revenue logs yet.</td></tr>';
                   return;
               }
               document.getElementById('revLogBody').innerHTML = logs.map(l => `
@@ -519,7 +428,7 @@
                       <td>${formatNum(l.serviceCharge)}</td>
                       <td>${formatNum(l.vatAmount)}</td>
                       <td style="font-weight:700;color:var(--green);">LKR ${formatNum(l.totalAmount)}</td>
-                      <td style="color:#888;font-size:12px;">${formatDateTime(l.loggedAt)}</td>
+                      <td style="color:#888;font-size:11px;">${formatDateTime(l.loggedAt)}</td>
                   </tr>`).join('');
           })
           .catch(() => {
@@ -527,10 +436,7 @@
           });
   }
 
-  function formatNum(n) {
-      return Number(n).toLocaleString();
-  }
-
+  function formatNum(n) { return Number(n).toLocaleString(); }
   function formatDateTime(dt) {
       if (!dt) return '—';
       try { return new Date(dt).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
@@ -540,9 +446,7 @@
   function goToDashboard() {
       fetch('/Ocean_Resort/DashboardServlet')
           .then(r => r.json())
-          .then(data => {
-              window.location.href = data.role === 'ADMIN' ? 'admin-dashboard.html' : 'staff-dashboard.html';
-          })
+          .then(data => { window.location.href = data.role === 'ADMIN' ? 'admin-dashboard.html' : 'staff-dashboard.html'; })
           .catch(() => { window.location.href = 'staff-dashboard.html'; });
   }
 </script>

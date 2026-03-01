@@ -319,8 +319,30 @@
     let currentPage = 1;
     const perPage = 10;
 
-    window.onload = loadReservations;
+    // Stores the current user's role — fetched once on page load
+    let currentUserRole = null;
 
+    window.onload = function () {
+        loadUserRole();      // 1. First fetch the role
+    };
+
+    // ─── Fetch current user role from the session ───────────────────────────
+    function loadUserRole() {
+        fetch('/Ocean_Resort/DashboardServlet')
+            .then(r => r.json())
+            .then(data => {
+                currentUserRole = data.role; // 'ADMIN' or 'STAFF'
+            })
+            .catch(() => {
+                // Default to STAFF if role cannot be determined (safe fallback)
+                currentUserRole = 'STAFF';
+            })
+            .finally(() => {
+                loadReservations(); // 2. Then load reservations
+            });
+    }
+
+    // ─── Load reservations ───────────────────────────────────────────────────
     function loadReservations() {
         fetch('/Ocean_Resort/ReservationServlet?action=getAll')
             .then(r => r.json())
@@ -378,6 +400,9 @@
             return;
         }
 
+        // ── Only render the delete button if the logged-in user is an ADMIN ──
+        const isAdmin = currentUserRole === 'ADMIN';
+
         let rows = pageData.map(r => `
             <tr>
                 <td class="res-id">${r.reservationId}</td>
@@ -396,9 +421,10 @@
                         <button class="action-btn btn-bill" title="Generate Bill" onclick="generateBill('${r.reservationId}')">
                             <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
                         </button>
+                        ${isAdmin ? `
                         <button class="action-btn btn-delete" title="Delete" onclick="deleteReservation('${r.reservationId}')">
                             <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                        </button>
+                        </button>` : ''}
                     </div>
                 </td>
             </tr>`).join('');
@@ -464,6 +490,11 @@
     }
 
     function deleteReservation(id) {
+        // Extra safety check — prevent staff from deleting even via console
+        if (currentUserRole !== 'ADMIN') {
+            alert('You do not have permission to delete reservations.');
+            return;
+        }
         if (!confirm('Are you sure you want to delete reservation ' + id + '?')) return;
         fetch('/Ocean_Resort/ReservationServlet?action=delete&id=' + id, { method: 'DELETE' })
             .then(r => r.json())

@@ -14,7 +14,7 @@
             rgba(10, 21, 40, 0.82) 0%,
             rgba(15, 76, 117, 0.78) 50%,
             rgba(10, 21, 40, 0.85) 100%),
-        url('images/bg.jpg') center center / cover no-repeat fixed;
+        url('images/welcome.jpg') center center / cover no-repeat fixed;
 }
 
     .navbar {
@@ -189,11 +189,49 @@
     .bill-footer .sig-line .sig-label { font-size: 12px; color: #888; }
 
     @media print {
-        .navbar, .back-btn, .search-bar, .bill-actions { display: none !important; }
-        body { background: white; }
-        .main-content { padding: 0; }
-        .bill-receipt { box-shadow: none; border-radius: 0; max-width: 100%; }
+        /* Hide all UI — only bill receipt prints */
+        .navbar, .back-btn, .search-bar, .bill-actions,
+        .page-header, #toast { display: none !important; }
+
+        body {
+            background: white !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .main-content { padding: 0 !important; margin: 0 !important; }
         .bill-wrapper { display: block !important; }
+        .bill-receipt {
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+        }
+
+        /* Force blue header to print correctly */
+        .bill-top {
+            background: #0f4c75 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .bill-top * { color: white !important; }
+        .bill-top .bill-title {
+            background: rgba(255,255,255,0.2) !important;
+            border: 1px solid rgba(255,255,255,0.5) !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* Force light backgrounds */
+        .subtotal-section, .bill-meta {
+            background: #f0f6ff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        @page {
+            size: A4;
+            margin: 12mm;
+        }
     }
 .toast-show { transform: translateX(0) !important; }
   </style>
@@ -305,7 +343,7 @@
       <div class="bill-footer">
         <div class="thank-you">Thank You for Choosing Ocean View Resort!</div>
         <p style="margin-top: 8px;">We hope to welcome you back soon.</p>
-        <p>For inquiries: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dfadbaacbaada9beabb6b0b1ac9fb0bcbabeb1adbaacb0adabf1b3b4">[email&#160;protected]</a> | +94 91 234 5678</p>
+        <p>For inquiries: info@oceanviewresort.lk | +94 91 234 5678</p>
         <div class="sig-line">
           <div><div class="line"></div><div class="sig-label">Guest Signature</div></div>
           <div><div class="line"></div><div class="sig-label">Authorized Signature</div></div>
