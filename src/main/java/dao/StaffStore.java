@@ -62,7 +62,6 @@ public class StaffStore {
             return true;
 
         } catch (SQLIntegrityConstraintViolationException e) {
-            // Duplicate username
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,7 +69,7 @@ public class StaffStore {
         }
     }
 
-    // ── Get all staff ──
+    // ── Get all staff (password included so profile page can pre-fill it) ──
     public List<Staff> getAll() {
         List<Staff> list = new ArrayList<>();
         String sql = "SELECT * FROM staff ORDER BY id ASC";
@@ -81,21 +80,98 @@ public class StaffStore {
 
             while (r.next()) {
                 Staff st = new Staff();
-                st.setId     (r.getString("staff_id"));
-                st.setName   (r.getString("name"));
-                st.setEmail  (r.getString("email"));
-                st.setContact(r.getString("contact"));
-                st.setRole   (r.getString("role"));
-                st.setDept   (r.getString("dept"));
-                st.setNic    (r.getString("nic"));
+                st.setId      (r.getString("staff_id"));
+                st.setName    (r.getString("name"));
+                st.setEmail   (r.getString("email"));
+                st.setContact (r.getString("contact"));
+                st.setRole    (r.getString("role"));
+                st.setDept    (r.getString("dept"));
+                st.setNic     (r.getString("nic"));
                 st.setUsername(r.getString("username"));
-                st.setStatus (r.getString("status"));
+                st.setPassword(r.getString("password")); // ← was missing before!
+                st.setStatus  (r.getString("status"));
                 list.add(st);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return list;
+    }
+
+    // ── Get single staff by staff_id ──
+    public Staff getById(String staffId) {
+        String sql = "SELECT * FROM staff WHERE staff_id = ?";
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, staffId);
+            ResultSet r = ps.executeQuery();
+            if (r.next()) {
+                Staff st = new Staff();
+                st.setId      (r.getString("staff_id"));
+                st.setName    (r.getString("name"));
+                st.setEmail   (r.getString("email"));
+                st.setContact (r.getString("contact"));
+                st.setRole    (r.getString("role"));
+                st.setDept    (r.getString("dept"));
+                st.setNic     (r.getString("nic"));
+                st.setUsername(r.getString("username"));
+                st.setPassword(r.getString("password"));
+                st.setStatus  (r.getString("status"));
+                return st;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // ── Get single staff by username ──
+    public Staff getByUsername(String username) {
+        String sql = "SELECT * FROM staff WHERE username = ?";
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet r = ps.executeQuery();
+            if (r.next()) {
+                Staff st = new Staff();
+                st.setId      (r.getString("staff_id"));
+                st.setName    (r.getString("name"));
+                st.setEmail   (r.getString("email"));
+                st.setContact (r.getString("contact"));
+                st.setRole    (r.getString("role"));
+                st.setDept    (r.getString("dept"));
+                st.setNic     (r.getString("nic"));
+                st.setUsername(r.getString("username"));
+                st.setPassword(r.getString("password"));
+                st.setStatus  (r.getString("status"));
+                return st;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // ── Update staff details and/or password ──
+    public boolean updateStaff(Staff staff) {
+        String sql = "UPDATE staff SET name=?, email=?, contact=?, role=?, dept=?, nic=?, password=?, status=? " +
+                "WHERE staff_id=?";
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, staff.getName());
+            ps.setString(2, staff.getEmail());
+            ps.setString(3, staff.getContact());
+            ps.setString(4, staff.getRole());
+            ps.setString(5, staff.getDept());
+            ps.setString(6, staff.getNic());
+            ps.setString(7, staff.getPassword());
+            ps.setString(8, staff.getStatus());
+            ps.setString(9, staff.getId());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // ── Delete staff by ID ──
@@ -121,9 +197,9 @@ public class StaffStore {
             ResultSet r = ps.executeQuery();
             if (r.next()) {
                 Staff st = new Staff();
-                st.setId     (r.getString("staff_id"));
-                st.setName   (r.getString("name"));
-                st.setRole   (r.getString("role"));
+                st.setId      (r.getString("staff_id"));
+                st.setName    (r.getString("name"));
+                st.setRole    (r.getString("role"));
                 st.setUsername(r.getString("username"));
                 return st;
             }

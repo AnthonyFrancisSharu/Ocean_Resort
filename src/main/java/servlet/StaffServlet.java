@@ -56,7 +56,6 @@ public class StaffServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            // ✅ Print full error to Tomcat console AND return it in JSON
             e.printStackTrace();
             out.print("{\"success\":false,\"message\":\"Server error: " + e.getMessage() + "\"}");
         }
@@ -80,7 +79,6 @@ public class StaffServlet extends HttpServlet {
             switch (action) {
 
                 case "add": {
-                    // Read JSON body
                     StringBuilder body = new StringBuilder();
                     try (BufferedReader reader = request.getReader()) {
                         String line;
@@ -88,7 +86,7 @@ public class StaffServlet extends HttpServlet {
                     }
 
                     String json = body.toString();
-                    System.out.println("[StaffServlet] Received JSON: " + json); // debug log
+                    System.out.println("[StaffServlet] Received JSON: " + json);
 
                     String name     = parseField(json, "name");
                     String email    = parseField(json, "email");
@@ -102,7 +100,6 @@ public class StaffServlet extends HttpServlet {
 
                     System.out.println("[StaffServlet] Parsed — name=" + name + ", username=" + username);
 
-                    // Basic validation
                     if (name.isEmpty() || username.isEmpty() || password.isEmpty()) {
                         out.print("{\"success\":false,\"message\":\"Name, username and password are required.\"}");
                         break;
@@ -133,6 +130,100 @@ public class StaffServlet extends HttpServlet {
                     break;
                 }
 
+                // ── EDIT staff profile details ────────────────────────────────────────
+                case "edit": {
+                    StringBuilder body = new StringBuilder();
+                    try (BufferedReader reader = request.getReader()) {
+                        String line;
+                        while ((line = reader.readLine()) != null) body.append(line);
+                    }
+
+                    String json = body.toString();
+                    System.out.println("[StaffServlet] edit JSON: " + json);
+
+                    String id      = parseField(json, "id");
+                    String name    = parseField(json, "name");
+                    String email   = parseField(json, "email");
+                    String contact = parseField(json, "contact");
+                    String dept    = parseField(json, "dept");
+                    String nic     = parseField(json, "nic");
+
+                    Staff existing = store.getById(id);
+                    if (existing == null) {
+                        out.print("{\"success\":false,\"message\":\"Staff member not found.\"}");
+                        break;
+                    }
+
+                    existing.setName(name);
+                    existing.setEmail(email);
+                    existing.setContact(contact);
+                    existing.setDept(dept);
+                    existing.setNic(nic);
+
+                    boolean updated = store.updateStaff(existing);
+                    if (updated) {
+                        out.print("{\"success\":true,\"message\":\"Profile updated successfully.\"}");
+                    } else {
+                        out.print("{\"success\":false,\"message\":\"Failed to update profile.\"}");
+                    }
+                    break;
+                }
+
+                // ── CHANGE PASSWORD ───────────────────────────────────────────────────
+                case "changePassword": {
+                    StringBuilder body = new StringBuilder();
+                    try (BufferedReader reader = request.getReader()) {
+                        String line;
+                        while ((line = reader.readLine()) != null) body.append(line);
+                    }
+
+                    String json = body.toString();
+                    System.out.println("[StaffServlet] changePassword JSON: " + json);
+
+                    String id          = parseField(json, "id");
+                    String username    = parseField(json, "username");
+                    String oldPassword = parseField(json, "oldPassword");
+                    String newPassword = parseField(json, "password");
+
+                    System.out.println("[StaffServlet] changePassword — id=" + id
+                            + ", username=" + username
+                            + ", oldPassword=" + oldPassword);
+
+                    // Find the staff member by id or username
+                    Staff staff = store.getById(id);
+                    if (staff == null) {
+                        staff = store.getByUsername(username);
+                    }
+
+                    if (staff == null) {
+                        out.print("{\"success\":false,\"message\":\"Staff member not found.\"}");
+                        break;
+                    }
+
+                    System.out.println("[StaffServlet] DB password=" + staff.getPassword());
+
+                    // Compare plain-text passwords (trim to avoid whitespace issues)
+                    if (!staff.getPassword().trim().equals(oldPassword.trim())) {
+                        out.print("{\"success\":false,\"message\":\"Current password is incorrect.\"}");
+                        break;
+                    }
+
+                    if (newPassword.isEmpty() || newPassword.length() < 8) {
+                        out.print("{\"success\":false,\"message\":\"New password must be at least 8 characters.\"}");
+                        break;
+                    }
+
+                    staff.setPassword(newPassword);
+                    boolean updated = store.updateStaff(staff);
+
+                    if (updated) {
+                        out.print("{\"success\":true,\"message\":\"Password changed successfully.\"}");
+                    } else {
+                        out.print("{\"success\":false,\"message\":\"Failed to update password.\"}");
+                    }
+                    break;
+                }
+
                 case "delete": {
                     String id = request.getParameter("id");
                     if (id == null || id.isEmpty()) {
@@ -153,7 +244,6 @@ public class StaffServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            // ✅ Full error details in Tomcat console AND in JSON response
             e.printStackTrace();
             out.print("{\"success\":false,\"message\":\"Server error: " + e.getMessage() + "\"}");
         }
