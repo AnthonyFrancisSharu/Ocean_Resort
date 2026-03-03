@@ -7,139 +7,44 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0a1628 0%, #0a2540 40%, #0d3559 70%, #0a2540 100%);
-        }
-
-        .navbar {
-            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
-            padding: 0 24px;
-            display: flex; align-items: center; justify-content: space-between;
-            height: 54px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
-        }
+        body { font-family: 'DM Sans', sans-serif; min-height: 100vh; background: linear-gradient(135deg, #0a1628 0%, #0a2540 40%, #0d3559 70%, #0a2540 100%); }
+        .navbar { background: linear-gradient(135deg, #0f4c75, #1b6ca8); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 54px; box-shadow: 0 3px 15px rgba(0,0,0,0.2); }
         .navbar-brand { color: white; font-family: 'Playfair Display', serif; font-size: 17px; }
         .nav-right { display: flex; align-items: center; gap: 10px; }
-        .back-btn {
-            background: rgba(255,255,255,0.15); color: white;
-            border: 1px solid rgba(255,255,255,0.3); padding: 7px 16px;
-            border-radius: 7px; cursor: pointer; font-size: 12px;
-            text-decoration: none; font-family: 'DM Sans', sans-serif;
-        }
+        .back-btn { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 7px 16px; border-radius: 7px; cursor: pointer; font-size: 12px; text-decoration: none; font-family: 'DM Sans', sans-serif; }
         .back-btn:hover { background: rgba(255,255,255,0.25); }
-
         .main-content { padding: 20px 28px; }
-
         .page-header { margin-bottom: 14px; display: flex; align-items: baseline; gap: 10px; }
         .page-header h1 { font-size: 20px; color: #fff; font-weight: 700; }
         .page-header p { color: rgba(255,255,255,0.65); font-size: 12px; }
-
-        /* Room type pill shown when pre-selected */
-        .room-type-pill {
-            display: none; align-items: center; gap: 8px;
-            background: rgba(27,108,168,0.3);
-            border: 1px solid rgba(27,108,168,0.5);
-            border-radius: 8px; padding: 7px 14px;
-            margin-bottom: 14px;
-            color: #7ec8e3; font-size: 12px; font-weight: 600;
-        }
+        .room-type-pill { display: none; align-items: center; gap: 8px; background: rgba(27,108,168,0.3); border: 1px solid rgba(27,108,168,0.5); border-radius: 8px; padding: 7px 14px; margin-bottom: 14px; color: #7ec8e3; font-size: 12px; font-weight: 600; }
         .room-type-pill.show { display: flex; }
-        .room-type-pill a {
-            color: rgba(255,255,255,0.6); font-size: 11px; margin-left: auto;
-            text-decoration: none; font-weight: 400;
-        }
-        .room-type-pill a:hover { color: white; }
-
-        .error-banner {
-            display: none; background: #fff0f0; border: 1px solid #ffcccc;
-            border-left: 4px solid #e74c3c; border-radius: 8px;
-            padding: 10px 14px; margin-bottom: 14px;
-            color: #c0392b; font-size: 13px; font-weight: 600;
-            align-items: center; gap: 8px;
-        }
+        .room-type-pill a { color: rgba(255,255,255,0.6); font-size: 11px; margin-left: auto; text-decoration: none; font-weight: 400; }
+        .error-banner { display: none; background: #fff0f0; border: 1px solid #ffcccc; border-left: 4px solid #e74c3c; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; color: #c0392b; font-size: 13px; font-weight: 600; align-items: center; gap: 8px; }
         .error-banner.show { display: flex; }
-
-        .form-card {
-            background: rgba(255,255,255,0.97);
-            border-radius: 14px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-            overflow: hidden;
-            border: 1.5px solid #c8d6e5;
-        }
-
-        .sections-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            border-bottom: 2px solid #c8d6e5;
-        }
-
+        .form-card { background: rgba(255,255,255,0.97); border-radius: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); overflow: hidden; border: 1.5px solid #c8d6e5; }
+        .sections-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 2px solid #c8d6e5; }
         .form-section { padding: 20px 22px; }
         .form-section:first-child { border-right: 2px solid #c8d6e5; }
-
-        .section-header {
-            display: flex; align-items: center; gap: 9px; margin-bottom: 14px;
-            padding-bottom: 10px; border-bottom: 1.5px solid #c8d6e5;
-        }
-        .sec-icon {
-            width: 30px; height: 30px;
-            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
+        .section-header { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1.5px solid #c8d6e5; }
+        .sec-icon { width: 30px; height: 30px; background: linear-gradient(135deg, #0f4c75, #1b6ca8); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .sec-icon svg { width: 16px; height: 16px; fill: white; }
         .section-header h3 { font-size: 13px; color: #1a1a2e; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .form-group { display: flex; flex-direction: column; gap: 4px; }
         .form-group.span-2 { grid-column: span 2; }
-
-        .form-group label {
-            font-size: 10px; font-weight: 600; color: #777;
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
+        .form-group label { font-size: 10px; font-weight: 600; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-group label .required { color: #e74c3c; }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 8px 10px;
-            border: 1.5px solid #b0bfcf;
-            border-radius: 7px;
-            font-size: 13px; color: #333;
-            background: #fafafa;
-            transition: all 0.2s; outline: none;
-            font-family: inherit;
-        }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: #1b6ca8; background: white;
-            box-shadow: 0 0 0 3px rgba(27,108,168,0.08);
-        }
+        .form-group input, .form-group select, .form-group textarea { padding: 8px 10px; border: 1.5px solid #b0bfcf; border-radius: 7px; font-size: 13px; color: #333; background: #fafafa; transition: all 0.2s; outline: none; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #1b6ca8; background: white; box-shadow: 0 0 0 3px rgba(27,108,168,0.08); }
         .form-group textarea { resize: none; height: 58px; }
-        .form-group .field-error { font-size: 10px; color: #e74c3c; display: none; }
-        .form-group.error input,
-        .form-group.error select,
-        .form-group.error textarea { border-color: #e74c3c; }
+        .form-group .field-error { font-size: 10px; color: #e74c3c; display: none; font-weight: 600; margin-top: 2px; }
+        .form-group.error input, .form-group.error select, .form-group.error textarea { border-color: #e74c3c; background: #fff8f8; box-shadow: 0 0 0 3px rgba(231,76,60,0.08); }
         .form-group.error .field-error { display: block; }
-
-        /* Highlight pre-selected room type */
-        select#roomType.pre-selected {
-            border-color: #1b6ca8;
-            background: #eef6ff;
-            color: #0f4c75;
-            font-weight: 600;
-        }
-
-        .room-status {
-            font-size: 11px; font-weight: 600;
-            display: none; align-items: center; gap: 4px; margin-top: 1px;
-        }
+        select#roomType.pre-selected { border-color: #1b6ca8; background: #eef6ff; color: #0f4c75; font-weight: 600; }
+        .room-status { font-size: 11px; font-weight: 600; display: none; align-items: center; gap: 4px; margin-top: 1px; }
         .room-status.available { color: #27ae60; display: flex; }
         .room-status.unavailable { color: #e74c3c; display: flex; }
-
         .rates-cost-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         .room-rates { background: #f0f6ff; border: 1.5px solid #9ab8d8; border-radius: 8px; padding: 10px 12px; }
         .room-rates h4 { font-size: 11px; color: #1b6ca8; margin-bottom: 8px; font-weight: 600; }
@@ -148,68 +53,32 @@
         .rate-item.active { border-color: #1b6ca8; background: #eef6ff; }
         .rate-item .room-type { font-size: 9px; color: #999; text-transform: uppercase; }
         .rate-item .rate { font-size: 12px; font-weight: 700; color: #0f4c75; }
-
-        .cost-preview {
-            background: linear-gradient(135deg, #0f4c75, #1b6ca8);
-            color: white; border-radius: 8px; padding: 12px 14px;
-            display: none; flex-direction: column; justify-content: center;
-        }
+        .cost-preview { background: linear-gradient(135deg, #0f4c75, #1b6ca8); color: white; border-radius: 8px; padding: 12px 14px; display: none; flex-direction: column; justify-content: center; }
         .cost-preview .cost-label { font-size: 11px; opacity: 0.85; }
         .cost-preview .cost-value { font-size: 22px; font-weight: 700; margin-top: 2px; }
         .cost-preview .cost-detail { font-size: 10px; opacity: 0.7; margin-top: 2px; }
-
-        .form-actions {
-            padding: 14px 22px;
-            display: flex; gap: 10px; justify-content: flex-end;
-            background: #f4f7fb; border-top: 2px solid #c8d6e5;
-        }
-
-        .btn {
-            padding: 9px 20px; border-radius: 8px;
-            font-size: 13px; font-weight: 600;
-            cursor: pointer; border: none; transition: all 0.2s;
-            display: flex; align-items: center; gap: 7px; font-family: inherit;
-        }
+        .form-actions { padding: 14px 22px; display: flex; gap: 10px; justify-content: flex-end; background: #f4f7fb; border-top: 2px solid #c8d6e5; }
+        .btn { padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: flex; align-items: center; gap: 7px; font-family: inherit; }
         .btn-secondary { background: #f0f4f8; color: #555; border: 1.5px solid #e0e0e0; }
         .btn-secondary:hover { background: #e0e8f0; }
         .btn-primary { background: linear-gradient(135deg, #0f4c75, #1b6ca8); color: white; }
         .btn-primary:hover { box-shadow: 0 4px 16px rgba(15,76,117,0.3); transform: translateY(-1px); }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-            display: none; align-items: center; justify-content: center; z-index: 999;
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 999; }
         .modal-overlay.show { display: flex; }
-        .modal {
-            background: white; border-radius: 16px; padding: 32px 28px;
-            text-align: center; max-width: 380px; width: 90%;
-            animation: popIn 0.3s ease;
-        }
+        .modal { background: white; border-radius: 16px; padding: 32px 28px; text-align: center; max-width: 380px; width: 90%; animation: popIn 0.3s ease; }
         @keyframes popIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal .success-icon {
-            width: 58px; height: 58px;
-            background: linear-gradient(135deg, #1a7a4a, #27ae60);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 14px;
-        }
+        .modal .success-icon { width: 58px; height: 58px; background: linear-gradient(135deg, #1a7a4a, #27ae60); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
         .modal .success-icon svg { width: 30px; height: 30px; fill: white; }
         .modal h3 { font-size: 18px; color: #1a1a2e; margin-bottom: 8px; }
         .modal p { font-size: 13px; color: #888; margin-bottom: 6px; }
         .modal .reservation-id { font-size: 20px; font-weight: 700; color: #1b6ca8; margin: 8px 0; }
         .modal .email-note { font-size: 11px; color: #27ae60; margin-top: 4px; }
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
-
-        @media (max-width: 700px) {
-            .sections-row { grid-template-columns: 1fr; }
-            .form-section:first-child { border-right: none; border-bottom: 2px solid #c8d6e5; }
-            .main-content { padding: 16px; }
-        }
+        @media (max-width: 700px) { .sections-row { grid-template-columns: 1fr; } .form-section:first-child { border-right: none; border-bottom: 2px solid #c8d6e5; } .main-content { padding: 16px; } }
     </style>
 </head>
 <body>
-
 <nav class="navbar">
     <div class="navbar-brand">🌊 Ocean Resort</div>
     <div class="nav-right">
@@ -217,27 +86,18 @@
         <a class="back-btn" href="javascript:void(0)" onclick="goToDashboard()">Dashboard</a>
     </div>
 </nav>
-
 <div class="main-content">
     <div class="page-header">
         <h1>Add New Reservation</h1>
         <p>Fill in guest details and booking info below.</p>
     </div>
-
-    <!-- Shows when coming from room selection -->
     <div class="room-type-pill" id="roomTypePill">
         🏨 <span id="pillText">Room pre-selected</span>
         <a href="javascript:void(0)" onclick="goToRoomSelect()">Change room →</a>
     </div>
-
-    <div class="error-banner" id="errorBanner">
-        ⚠️ <span id="errorText">An error occurred.</span>
-    </div>
-
+    <div class="error-banner" id="errorBanner">⚠️ <span id="errorText">An error occurred.</span></div>
     <div class="form-card">
         <div class="sections-row">
-
-            <!-- LEFT: Guest Information -->
             <div class="form-section">
                 <div class="section-header">
                     <div class="sec-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
@@ -251,17 +111,17 @@
                     <div class="form-group">
                         <label>Full Name <span class="required">*</span></label>
                         <input type="text" id="customerName" placeholder="Guest full name" />
-                        <span class="field-error">Required.</span>
+                        <span class="field-error">Full name is required.</span>
                     </div>
                     <div class="form-group span-2">
                         <label>Address <span class="required">*</span></label>
                         <textarea id="address" placeholder="Full address"></textarea>
-                        <span class="field-error">Required.</span>
+                        <span class="field-error">Address is required.</span>
                     </div>
                     <div class="form-group">
                         <label>Contact No. <span class="required">*</span></label>
                         <input type="tel" id="contactNumber" placeholder="0712345678" maxlength="10" />
-                        <span class="field-error">Enter 10-digit number.</span>
+                        <span class="field-error">Enter a valid 10-digit number.</span>
                     </div>
                     <div class="form-group">
                         <label>Email <span class="required">*</span></label>
@@ -271,7 +131,7 @@
                     <div class="form-group">
                         <label>NIC / Passport <span class="required">*</span></label>
                         <input type="text" id="nicNumber" placeholder="991234567V" />
-                        <span class="field-error">Required.</span>
+                        <span class="field-error">NIC / Passport is required.</span>
                     </div>
                     <div class="form-group">
                         <label>No. of Guests <span class="required">*</span></label>
@@ -282,12 +142,10 @@
                             <option value="3">3 Guests</option>
                             <option value="4">4 Guests</option>
                         </select>
-                        <span class="field-error">Required.</span>
+                        <span class="field-error">Please select number of guests.</span>
                     </div>
                 </div>
             </div>
-
-            <!-- RIGHT: Booking Details -->
             <div class="form-section">
                 <div class="section-header">
                     <div class="sec-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
@@ -303,32 +161,29 @@
                             <option value="Suite">Suite</option>
                             <option value="Presidential">Presidential</option>
                         </select>
-                        <span class="field-error">Required.</span>
+                        <span class="field-error">Please select a room type.</span>
                     </div>
                     <div class="form-group">
                         <label>Room Number <span class="required">*</span></label>
                         <input type="text" id="roomNumber" placeholder="e.g. 101" oninput="clearRoomStatus()" />
-                        <span class="field-error">Required.</span>
-                        <div class="room-status" id="roomStatus">
-                            <span id="roomStatusText"></span>
-                        </div>
+                        <span class="field-error">Room number is required.</span>
+                        <div class="room-status" id="roomStatus"><span id="roomStatusText"></span></div>
                     </div>
                     <div class="form-group">
                         <label>Check-in Date <span class="required">*</span></label>
                         <input type="date" id="checkIn" onchange="calculateCost(); clearRoomStatus();" />
-                        <span class="field-error">Required.</span>
+                        <span class="field-error">Please select check-in date.</span>
                     </div>
                     <div class="form-group">
                         <label>Check-out Date <span class="required">*</span></label>
                         <input type="date" id="checkOut" onchange="calculateCost(); clearRoomStatus();" />
-                        <span class="field-error">Must be after check-in.</span>
+                        <span class="field-error">Must be after check-in date.</span>
                     </div>
                     <div class="form-group span-2">
                         <label>Special Requests</label>
                         <textarea id="specialRequests" placeholder="Any special requests or notes..."></textarea>
                     </div>
                 </div>
-
                 <div class="rates-cost-row">
                     <div class="room-rates">
                         <h4>📋 Rates Per Night (LKR)</h4>
@@ -347,15 +202,12 @@
                 </div>
             </div>
         </div>
-
         <div class="form-actions">
             <button class="btn btn-secondary" onclick="clearForm()">✕ Clear</button>
             <button class="btn btn-primary" id="saveBtn" onclick="submitReservation()">✓ Save Reservation</button>
         </div>
     </div>
 </div>
-
-<!-- Success Modal -->
 <div class="modal-overlay" id="successModal">
     <div class="modal">
         <div class="success-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
@@ -370,17 +222,26 @@
         </div>
     </div>
 </div>
-
 <script>
     const ROOM_RATES = { Standard: 8500, Deluxe: 12000, Suite: 18500, Presidential: 35000 };
+
+    function setError(id, msg) {
+        const el = document.getElementById(id);
+        const group = el.closest('.form-group');
+        const errEl = group.querySelector('.field-error');
+        group.classList.add('error');
+        if (errEl && msg) errEl.textContent = msg;
+    }
+    function clearError(id) {
+        const el = document.getElementById(id);
+        if (el) el.closest('.form-group').classList.remove('error');
+    }
 
     window.onload = function () {
         generateReservationId();
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('checkIn').min = today;
+        document.getElementById('checkIn').min  = today;
         document.getElementById('checkOut').min = today;
-
-        // ── Pre-select room type from URL parameter ──
         const params   = new URLSearchParams(window.location.search);
         const roomType = params.get('roomType');
         if (roomType && ROOM_RATES[roomType]) {
@@ -396,10 +257,7 @@
     function highlightRate() {
         const type = document.getElementById('roomType').value;
         document.querySelectorAll('.rate-item').forEach(el => el.classList.remove('active'));
-        if (type) {
-            const el = document.getElementById('rate-' + type);
-            if (el) el.classList.add('active');
-        }
+        if (type) { const el = document.getElementById('rate-' + type); if (el) el.classList.add('active'); }
     }
 
     function generateReservationId() {
@@ -431,7 +289,6 @@
     }
 
     function clearRoomStatus() { document.getElementById('roomStatus').className = 'room-status'; }
-
     function showRoomStatus(available) {
         const el = document.getElementById('roomStatus');
         document.getElementById('roomStatusText').textContent = available ? '✓ Available for selected dates' : '✗ Already booked for these dates!';
@@ -449,55 +306,40 @@
         let valid = true;
         hideError();
 
-        const fields = [
-            { id:'guestName',  msg:'Please enter the guest name.' },
-            { id:'address',    msg:'Please enter the address.' },
-            { id:'nicNumber',  msg:'Please enter NIC or Passport number.' },
-            { id:'numGuests',  msg:'Please select number of guests.' },
-            { id:'roomType',   msg:'Please select a room type.' },
-            { id:'roomNumber', msg:'Please enter the room number.' },
-            { id:'checkIn',    msg:'Please select check-in date.' },
-            { id:'checkOut',   msg:'Please select check-out date.' }
+        const required = [
+            { id: 'customerName', msg: 'Full name is required.'             },
+            { id: 'address',      msg: 'Address is required.'               },
+            { id: 'nicNumber',    msg: 'NIC / Passport number is required.' },
+            { id: 'numGuests',    msg: 'Please select number of guests.'    },
+            { id: 'roomType',     msg: 'Please select a room type.'         },
+            { id: 'roomNumber',   msg: 'Room number is required.'           },
+            { id: 'checkIn',      msg: 'Please select check-in date.'       },
+            { id: 'checkOut',     msg: 'Please select check-out date.'      }
         ];
-        fields.forEach(f => {
-            const el    = document.getElementById(f.id);
-            const group = el.closest('.form-group');
-            const errEl = group.querySelector('.field-error');
-            if (!el.value.trim()) { group.classList.add('error'); if (errEl) errEl.textContent = f.msg; valid = false; }
-            else group.classList.remove('error');
+        required.forEach(f => {
+            if (!document.getElementById(f.id).value.trim()) { setError(f.id, f.msg); valid = false; }
+            else clearError(f.id);
         });
 
         const contact = document.getElementById('contactNumber').value.trim();
-        const cGroup  = document.getElementById('contactNumber').closest('.form-group');
-        const cErr    = cGroup.querySelector('.field-error');
-        if (!/^[0-9]{10}$/.test(contact)) {
-            cGroup.classList.add('error');
-            if (cErr) cErr.textContent = 'Enter a valid 10-digit number.';
-            valid = false;
-        } else cGroup.classList.remove('error');
+        if (!contact) {
+            setError('contactNumber', 'Contact number is required.'); valid = false;
+        } else if (!/^[0-9]{10}$/.test(contact)) {
+            setError('contactNumber', 'Enter a valid 10-digit number.'); valid = false;
+        } else clearError('contactNumber');
 
-        const email  = document.getElementById('email').value.trim();
-        const eGroup = document.getElementById('email').closest('.form-group');
-        const eErr   = eGroup.querySelector('.field-error');
+        const email = document.getElementById('email').value.trim();
         if (!email) {
-            eGroup.classList.add('error');
-            if (eErr) eErr.textContent = 'Email address is required.';
-            valid = false;
+            setError('email', 'Email address is required.'); valid = false;
         } else if (!/^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-            eGroup.classList.add('error');
-            if (eErr) eErr.textContent = 'Please enter a valid email address.';
-            valid = false;
-        } else eGroup.classList.remove('error');
+            setError('email', 'Please enter a valid email address.'); valid = false;
+        } else clearError('email');
 
         const ci = document.getElementById('checkIn').value;
         const co = document.getElementById('checkOut').value;
         if (ci && co && new Date(co) <= new Date(ci)) {
-            const coGroup = document.getElementById('checkOut').closest('.form-group');
-            coGroup.classList.add('error');
-            coGroup.querySelector('.field-error').textContent = 'Must be after check-in date.';
-            valid = false;
+            setError('checkOut', 'Check-out must be after check-in date.'); valid = false;
         }
-
         return valid;
     }
 
@@ -507,7 +349,7 @@
         saveBtn.disabled = true; saveBtn.textContent = 'Saving...';
         const data = {
             reservationId:   document.getElementById('reservationId').value.trim(),
-            guestName:       document.getElementById('guestName').value.trim(),
+            guestName:       document.getElementById('customerName').value.trim(),
             address:         document.getElementById('address').value.trim(),
             contactNumber:   document.getElementById('contactNumber').value.trim(),
             email:           document.getElementById('email').value.trim(),
@@ -517,7 +359,7 @@
             roomNumber:      document.getElementById('roomNumber').value.trim(),
             checkIn:         document.getElementById('checkIn').value,
             checkOut:        document.getElementById('checkOut').value,
-            checkInTime:     "14:00", checkOutTime: "12:00",
+            checkInTime:     '14:00', checkOutTime: '12:00',
             specialRequests: document.getElementById('specialRequests').value.trim()
         };
         fetch('/Ocean_Resort/ReservationServlet?action=add', {
@@ -535,7 +377,7 @@
                 showError(res.message || 'Could not save reservation. Please try again.');
                 if (res.message && res.message.includes('already booked')) {
                     showRoomStatus(false);
-                    document.getElementById('roomNumber').closest('.form-group').classList.add('error');
+                    setError('roomNumber', 'This room is already booked for the selected dates.');
                 }
             }
         })
@@ -546,7 +388,7 @@
     }
 
     function clearForm() {
-        ['guestName','address','contactNumber','email','nicNumber','roomNumber','specialRequests']
+        ['customerName','address','contactNumber','email','nicNumber','roomNumber','specialRequests']
             .forEach(id => { document.getElementById(id).value = ''; });
         document.getElementById('numGuests').value = '';
         document.getElementById('roomType').value  = '';
@@ -558,22 +400,9 @@
         clearRoomStatus(); hideError();
     }
 
-    function addAnother() {
-        document.getElementById('successModal').classList.remove('show');
-        clearForm(); generateReservationId();
-    }
-
-    function goToRoomSelect() {
-        const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-        window.location.href = basePath + '/select-room.html';
-    }
-
-    function goToDashboard() {
-        const from = sessionStorage.getItem('cameFrom');
-        const path = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 2)) || '/Ocean_Resort';
-        window.location.href = path + (from === 'admin' ? '/admin-dashboard.html' : '/staff-dashboard.html');
-    }
-
+    function addAnother() { document.getElementById('successModal').classList.remove('show'); clearForm(); generateReservationId(); }
+    function goToRoomSelect() { const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')); window.location.href = basePath + '/select-room.html'; }
+    function goToDashboard() { const from = sessionStorage.getItem('cameFrom'); const path = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 2)) || '/Ocean_Resort'; window.location.href = path + (from === 'admin' ? '/admin-dashboard.html' : '/staff-dashboard.html'); }
     if (document.referrer.includes('admin-dashboard')) sessionStorage.setItem('cameFrom', 'admin');
     else if (document.referrer.includes('staff-dashboard')) sessionStorage.setItem('cameFrom', 'staff');
 </script>
