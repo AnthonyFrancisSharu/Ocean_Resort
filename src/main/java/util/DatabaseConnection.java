@@ -4,10 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- * DatabaseConnection - Provides MySQL connection
- * Change DB_USER and DB_PASS to match your MySQL credentials
- */
+
 public class DatabaseConnection {
 
     private static final String URL      = "jdbc:mysql://localhost:3306/ocean_resort?useSSL=false&serverTimezone=UTC";
